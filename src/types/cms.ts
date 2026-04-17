@@ -140,3 +140,28 @@ export type CmsPostCreate =
 export type CmsPostResponse =
   | { readonly provider: 'wordpress'; readonly data: WordPressPostResponse }
   | { readonly provider: 'shopify'; readonly data: ShopifyArticleResponse };
+
+// ---------- CMS operation outcome (Result/Either for CMS API calls) --------
+
+export type CmsErrorCode =
+  | 'auth_failed'       // 401 from the CMS API
+  | 'not_found'         // 404 from the CMS API
+  | 'rate_limited'      // 429 from the CMS API
+  | 'validation_failed' // payload rejected by CMS (422 / 400)
+  | 'upstream_error'    // 5xx from the CMS API
+  | 'timeout';          // request took longer than the budget
+
+export interface CmsOperationResult<T> {
+  readonly ok: true;
+  readonly data: T;
+  readonly httpStatus: number;
+}
+
+export interface CmsOperationError {
+  readonly ok: false;
+  readonly code: CmsErrorCode;
+  readonly message: string;
+  readonly httpStatus?: number;
+}
+
+export type CmsOperationOutcome<T> = CmsOperationResult<T> | CmsOperationError;

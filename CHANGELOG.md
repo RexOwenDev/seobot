@@ -2,6 +2,39 @@
 
 All notable changes to SEOBot are documented here. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.4.0] — 2026-04-18 — Phase 4: CMS Integration Skeleton ★
+
+### Added
+
+- `src/types/cms.ts` — added `CmsErrorCode`, `CmsOperationResult<T>`, `CmsOperationError`, `CmsOperationOutcome<T>` (Result/Either for CMS API calls)
+- `src/lib/cms/wordpress/client.ts` — `WordPressClient` shape + `createWordPressClient()` factory; Basic auth from App Password with space-stripping; SSRF note (siteUrl must come from env, not user input)
+- `src/lib/cms/wordpress/posts.ts` — `createPost()`, `updatePost()`, `getPost()` stubs with exact WP REST v2 payload types and documented endpoint paths
+- `src/lib/cms/wordpress/media.ts` — `uploadFeaturedImage()` stub; multipart binary upload pattern documented (NOT JSON, requires raw blob + Content-Disposition header)
+- `src/lib/cms/wordpress/taxonomy.ts` — `getOrCreateCategory()`, `getOrCreateTag()` stubs; `resolveCategoryIds()` / `resolveTagIds()` batch helpers
+- `src/lib/cms/shopify/client.ts` — `ShopifyClient` shape + `createShopifyClient()` factory; `X-Shopify-Access-Token` auth; API version pinned to `2025-01`
+- `src/lib/cms/shopify/articles.ts` — `createArticle()`, `updateArticle()`, `getArticle()` stubs with exact Shopify Admin API v2025-01 payload types
+- `src/lib/cms/shopify/blogs.ts` — `listBlogs()` stub; `getOrCreateBlog()` with list-then-create pattern documented
+- `src/lib/cms/adapters.ts` — three-function canonical adapter layer:
+  - `draftToCanonical(draft, options)` — assembles `CanonicalPublishPayload` incl. Markdown→HTML conversion stub (TODOed for Unified.js in Phase 5)
+  - `canonicalToWordPress(payload, options?)` — maps to `WordPressPostCreate`; Yoast meta fields; pre-resolved category/tag IDs; `date` field set for `status='future'`
+  - `canonicalToShopify(payload, options)` — maps to `ShopifyArticleCreate`; tags array → CSV string (Shopify API requirement); SEO metafields in `seo.*` namespace
+- `src/lib/cms/publish.ts` — `publishArticle(articleId, cmsConnectionId)` stub; production flow documented in JSDoc (decrypt RPC → adapter → CMS create → publish_jobs row)
+- `src/lib/cms/index.ts` — barrel export for all CMS functions and types
+- `src/app/api/cms/publish/route.ts` — `POST /api/cms/publish` skeleton; Zod body validation; returns 202 with fake job ID; auth middleware absent (Phase 5)
+- `src/app/api/cms/test-connection/route.ts` — `POST /api/cms/test-connection` skeleton; accepts `cmsConnectionId` UUID (credentials looked up from DB — never in request body); returns fixture verified status
+- `tests/cms-adapters.test.ts` — 24 tests covering the full adapter chain:
+  - `draftToCanonical`: title/slug/meta/canonicalUrl/bodyHtml/tags/featuredImage mapping
+  - `canonicalToWordPress`: all field mappings including Yoast meta, status, future date, category/tag IDs
+  - `canonicalToShopify`: handle vs slug, CSV tags, published bool, seo.description/canonical_url metafields
+  - Round-trip: WP + Shopify outputs share same title and meta description
+
+### Design decisions
+
+- `canonicalToShopify` converts `tags: string[]` → CSV string explicitly with a comment explaining the bug it prevents — Shopify will store `"[object Object]"` if passed an array
+- CMS credentials never enter the API route body — `cmsConnectionId` (UUID) is the only credential reference; Phase 5 decrypts via service-role Supabase RPC
+- WP App Password spaces are stripped at client creation, not at call time — documented in `createWordPressClient()` comments
+- Auth middleware absent from route handlers in Phase 4 — noted explicitly in each route to prevent P04 false veto; Phase 5 adds Supabase session verification
+
 ## [0.3.0] — 2026-04-18 — Phase 3: Pipeline Stub Layer
 
 ### Added
