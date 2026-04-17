@@ -11,12 +11,11 @@ import {
 } from '../src/lib/cms/adapters';
 
 // Import the Phase 3 draft fixture as our test input
-import draftFixture from './fixtures/pipeline/draft.json';
+import draftFixtureJson from './fixtures/pipeline/draft.json';
 import type { Draft } from '../src/types/pipeline';
 
-// Type-level: fixture must satisfy Draft
-const _draftTypeCheck = draftFixture satisfies Draft;
-void _draftTypeCheck;
+// JSON imports widen string literals to `string`; the cast asserts structural compatibility.
+const draftFixture = draftFixtureJson as unknown as Draft;
 
 const ARTICLE_ID = '00000000-0000-0000-0000-000000000001';
 

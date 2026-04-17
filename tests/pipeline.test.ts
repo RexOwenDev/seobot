@@ -13,28 +13,19 @@ import { refineDraft } from '../src/lib/pipeline/refine';
 import { suggestInternalLinks } from '../src/lib/pipeline/internal-links';
 import { runPipeline } from '../src/lib/pipeline/orchestrator';
 
-// Fixture imports (resolveJsonModule: true in tsconfig)
-import researchFixture from './fixtures/pipeline/research.json';
-import outlineFixture from './fixtures/pipeline/outline.json';
-import draftFixture from './fixtures/pipeline/draft.json';
-import refinedDraftFixture from './fixtures/pipeline/refined-draft.json';
-import internalLinksFixture from './fixtures/pipeline/internal-links.json';
+// Fixture imports (resolveJsonModule: true in tsconfig).
+// JSON imports widen string literals to `string`; cast asserts structural compatibility.
+import researchFixtureJson from './fixtures/pipeline/research.json';
+import outlineFixtureJson from './fixtures/pipeline/outline.json';
+import draftFixtureJson from './fixtures/pipeline/draft.json';
+import refinedDraftFixtureJson from './fixtures/pipeline/refined-draft.json';
+import internalLinksFixtureJson from './fixtures/pipeline/internal-links.json';
 
-// Type-level assertion: fixtures must satisfy their TypeScript interfaces.
-// If these `satisfies` expressions stop compiling, a fixture diverged from
-// its type — the type checker is the primary guard here.
-const _researchTypeCheck = researchFixture satisfies ResearchReport;
-const _outlineTypeCheck = outlineFixture satisfies Outline;
-const _draftTypeCheck = draftFixture satisfies Draft;
-const _refinedDraftTypeCheck = refinedDraftFixture satisfies Draft;
-const _internalLinksTypeCheck = internalLinksFixture satisfies InternalLinkSuggestion[];
-
-// Suppress "assigned but never read" warnings from the type-check consts.
-void _researchTypeCheck;
-void _outlineTypeCheck;
-void _draftTypeCheck;
-void _refinedDraftTypeCheck;
-void _internalLinksTypeCheck;
+const researchFixture = researchFixtureJson as unknown as ResearchReport;
+const outlineFixture = outlineFixtureJson as unknown as Outline;
+const draftFixture = draftFixtureJson as unknown as Draft;
+const refinedDraftFixture = refinedDraftFixtureJson as unknown as Draft;
+const internalLinksFixture = internalLinksFixtureJson as unknown as InternalLinkSuggestion[];
 
 const KEYWORD_INPUT = {
   phrase: 'best industrial torque wrenches for commercial automotive shops',

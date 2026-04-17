@@ -1,12 +1,5 @@
-import type { VercelConfig } from '@vercel/config/v1';
-
-/**
- * Vercel deployment configuration.
- *
- * Cron definitions are placeholders for future phases — all endpoints are
- * stubs today and return 204 without side-effects.
- */
-export const config: VercelConfig = {
+// Cron definitions are placeholders — endpoints are stubs returning 204.
+export const config = {
   framework: 'nextjs',
   buildCommand: 'npm run build',
   crons: [
