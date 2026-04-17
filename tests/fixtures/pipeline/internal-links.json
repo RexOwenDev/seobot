@@ -1,0 +1,30 @@
+[
+  {
+    "anchorText": "ISO 6789 calibration certificate",
+    "targetArticleId": null,
+    "targetUrl": null,
+    "positionHint": "body",
+    "relevanceScore": 92
+  },
+  {
+    "anchorText": "commercial wheel-end torque sequences",
+    "targetArticleId": null,
+    "targetUrl": null,
+    "positionHint": "body",
+    "relevanceScore": 87
+  },
+  {
+    "anchorText": "ForgeTorque heavy-duty socket set",
+    "targetArticleId": null,
+    "targetUrl": null,
+    "positionHint": "conclusion",
+    "relevanceScore": 78
+  },
+  {
+    "anchorText": "shop management system integrations",
+    "targetArticleId": null,
+    "targetUrl": null,
+    "positionHint": "intro",
+    "relevanceScore": 65
+  }
+]

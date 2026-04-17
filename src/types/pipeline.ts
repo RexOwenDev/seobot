@@ -64,6 +64,21 @@ export interface InternalLinkSuggestion {
   readonly relevanceScore: number;
 }
 
+export interface ExistingArticleRef {
+  readonly id: string;
+  readonly h1: string;
+  readonly slug: string;
+  readonly excerpt: string | null;
+}
+
+export interface PipelineResult {
+  readonly research: ResearchReport;
+  readonly outline: Outline;
+  readonly draft: Draft;
+  readonly refinedDraft: Draft;
+  readonly internalLinks: readonly InternalLinkSuggestion[];
+}
+
 export interface PipelineStageResult<T> {
   readonly ok: true;
   readonly data: T;

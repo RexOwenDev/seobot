@@ -1,0 +1,74 @@
+import 'server-only';
+import type {
+  KeywordInput,
+  ResearchReport,
+  PipelineStageOutcome,
+} from '@/types/pipeline';
+
+// Prompt placeholders — operator methodology not included in this repo.
+const _SYSTEM_PROMPT = '// TODO: operator-supplied prompt — see internal methodology doc';
+const _USER_PROMPT_TEMPLATE = '// TODO: operator-supplied prompt — see internal methodology doc';
+
+const RESEARCH_FIXTURE: ResearchReport = {
+  keyword: 'best industrial torque wrenches for commercial automotive shops',
+  locale: 'en-US',
+  classifiedIntent: 'commercial',
+  relatedQuestions: [
+    'What torque wrench is best for heavy-duty commercial use?',
+    'How do I calibrate a torque wrench for shop compliance?',
+    'What is the difference between click-type and digital torque wrenches?',
+    'How often should commercial torque wrenches be recalibrated?',
+    'What torque range is needed for commercial truck lug nuts?',
+  ],
+  competitors: [
+    {
+      url: 'https://www.example-tools-review.com/best-industrial-torque-wrenches',
+      title: '7 Best Industrial Torque Wrenches for Commercial Shops (2025 Review)',
+      wordCount: 2840,
+      headings: [
+        { level: 2, text: 'What to Look for in a Commercial-Grade Torque Wrench', position: 1 },
+        { level: 2, text: 'Top 7 Industrial Torque Wrenches Reviewed', position: 2 },
+        { level: 3, text: 'Best Overall: Click-Type for High-Volume Shops', position: 3 },
+        { level: 3, text: 'Best Digital: LCD Readout for Precision Work', position: 4 },
+        { level: 2, text: 'Calibration and Compliance Requirements', position: 5 },
+        { level: 2, text: 'Frequently Asked Questions', position: 6 },
+      ],
+    },
+    {
+      url: 'https://www.proautoshopguide.com/torque-wrench-buyers-guide',
+      title: "Commercial Torque Wrench Buyer's Guide — Pro Auto Shop Edition",
+      wordCount: 1920,
+      headings: [
+        { level: 2, text: 'Drive Size Matters: 1/2 vs 3/4 vs 1-Inch Drive', position: 1 },
+        { level: 2, text: 'Torque Range Specifications by Vehicle Class', position: 2 },
+        { level: 2, text: 'ISO 6789 Compliance for Shop Certification', position: 3 },
+      ],
+    },
+  ],
+  suggestedSchemaType: 'Article',
+  generatedAt: '2025-06-15T09:00:00.000Z',
+};
+
+/**
+ * Stage 1 — SERP research and intent classification.
+ *
+ * Stub: returns fixture data shaped to the caller's locale and phrase.
+ * Phase 5 replaces the fixture body with an AI Gateway call using
+ * the operator-supplied research prompt.
+ */
+export async function researchKeyword(
+  input: KeywordInput,
+): Promise<PipelineStageOutcome<ResearchReport>> {
+  const start = Date.now();
+  return {
+    ok: true,
+    data: {
+      ...RESEARCH_FIXTURE,
+      keyword: input.phrase,
+      locale: input.locale,
+      classifiedIntent: input.intent ?? RESEARCH_FIXTURE.classifiedIntent,
+      generatedAt: new Date().toISOString(),
+    },
+    durationMs: Date.now() - start,
+  };
+}
