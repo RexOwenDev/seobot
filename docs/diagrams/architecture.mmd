@@ -1,0 +1,58 @@
+%%{init: {'theme': 'dark', 'flowchart': {'curve': 'basis'}}}%%
+flowchart TD
+    subgraph Browser["🖥  Browser"]
+        UI["`**Next.js App Router**
+        React 19 · Tailwind v4
+        shadcn/ui components`"]:::ui
+    end
+
+    subgraph Vercel["☁  Vercel Fluid Compute"]
+        direction TB
+        SA["`**Server Actions**
+        + API Routes`"]:::server
+        subgraph Pipeline["Pipeline Layer"]
+            direction LR
+            RS2[Research]:::pipe --> OL2[Outline]:::pipe --> DR2[Draft]:::pipe --> RF[Refine]:::pipe
+        end
+        SEO["`**SEO Validator**
+        10 rules · weighted score
+        pass / warn / fail`"]:::seo
+        CMS["`**CMS Adapters**
+        Canonical → WP
+        Canonical → Shopify`"]:::adapter
+    end
+
+    subgraph Supabase["🗄  Supabase (PostgreSQL)"]
+        DB[("`**Database**
+        RLS on every table
+        Envelope-encrypted CMS creds`")]:::db
+    end
+
+    subgraph External["🌐  External APIs  (operator-supplied credentials)"]
+        direction LR
+        AI["`Vercel AI Gateway
+        Claude Sonnet 4.6`"]:::ext
+        WP2["`WordPress
+        REST v2`"]:::ext
+        SH2["`Shopify
+        Admin API 2025-01`"]:::ext
+    end
+
+    UI -->|server actions| SA
+    SA --> Pipeline
+    SA --> SEO
+    SA --> CMS
+    Pipeline -->|"stub — no live calls\nin skeleton mode"| AI
+    CMS --> WP2
+    CMS --> SH2
+    SA  --> DB
+    Pipeline --> DB
+    CMS --> DB
+
+    classDef ui      fill:#1e3a5f,stroke:#3b82f6,color:#bfdbfe
+    classDef server  fill:#27272a,stroke:#52525b,color:#e4e4e7
+    classDef pipe    fill:#292524,stroke:#78716c,color:#d6d3d1
+    classDef seo     fill:#1c1917,stroke:#a16207,color:#fef08a
+    classDef adapter fill:#14532d,stroke:#16a34a,color:#bbf7d0
+    classDef db      fill:#1e1b4b,stroke:#6366f1,color:#c7d2fe
+    classDef ext     fill:#1f2937,stroke:#6b7280,color:#d1d5db

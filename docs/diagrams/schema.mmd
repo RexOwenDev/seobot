@@ -1,0 +1,101 @@
+%%{init: {'theme': 'dark'}}%%
+erDiagram
+    workspaces {
+        uuid id PK
+        text name
+        text slug
+        timestamptz created_at
+    }
+    workspace_members {
+        uuid workspace_id FK
+        uuid user_id FK
+        text role "owner | editor | viewer"
+    }
+    keywords {
+        uuid id PK
+        uuid workspace_id FK
+        text phrase
+        text locale
+        int  search_volume
+        int  difficulty "0–100"
+        text intent "informational | commercial | transactional | navigational"
+        text cluster
+    }
+    briefs {
+        uuid id PK
+        uuid keyword_id FK
+        text status "draft | approved | generating | done"
+        jsonb required_entities
+        text[] banned_terms
+    }
+    articles {
+        uuid id PK
+        uuid brief_id FK
+        text h1 "NOT NULL · 20–80 chars"
+        text slug "NOT NULL · regex validated"
+        text meta_description "NOT NULL · 120–170 chars"
+        text schema_type "Article | BlogPosting | HowTo | FAQPage | NewsArticle"
+        text canonical_url
+        int  word_count
+        int  reading_time_mins
+    }
+    article_sections {
+        uuid id PK
+        uuid article_id FK
+        int  heading_level "2 | 3 | 4"
+        text heading_text
+        text body_markdown
+        int  position
+    }
+    internal_links {
+        uuid id PK
+        uuid article_id FK
+        text anchor_text
+        text target_slug
+        int  relevance_score "0–100"
+        bool accepted
+        text position_hint
+    }
+    cms_connections {
+        uuid id PK
+        uuid workspace_id FK
+        text provider "wordpress | shopify"
+        text label
+        text site_url
+        bytea ciphertext "AES-256-GCM encrypted credentials"
+        bytea iv        "12 bytes — unique per encryption"
+        bytea auth_tag  "16 bytes — GCM authentication tag"
+        int  key_version
+    }
+    publish_jobs {
+        uuid id PK
+        uuid article_id FK
+        uuid cms_connection_id FK
+        text status "pending | running | published | failed"
+        text idempotency_key "UNIQUE — prevents duplicate posts"
+        int  attempts "max 3"
+        text external_url
+        timestamptz started_at
+        timestamptz completed_at
+    }
+    seo_audits {
+        uuid id PK
+        uuid article_id FK
+        text rule_key
+        text rule_verdict "pass | warn | fail"
+        int  overall_score "0–100"
+        text verdict "ready | needs_work | reject"
+        jsonb details
+        timestamptz created_at
+    }
+
+    workspaces      ||--o{ workspace_members  : "has members"
+    workspaces      ||--o{ keywords           : "tracks"
+    workspaces      ||--o{ cms_connections    : "has"
+    keywords        ||--o{ briefs             : "spawns"
+    briefs          ||--o{ articles           : "produces"
+    articles        ||--o{ article_sections   : "structured as"
+    articles        ||--o{ internal_links     : "links to"
+    articles        ||--o{ publish_jobs       : "queues"
+    articles        ||--o{ seo_audits         : "audited by"
+    cms_connections ||--o{ publish_jobs       : "targets"

@@ -1,0 +1,37 @@
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#27272a', 'edgeLabelBackground': '#18181b'}}}%%
+flowchart LR
+    KW(["`**Keyword**
+    Input`"]):::input
+    RS["`**Research**
+    SERP · entities
+    competitors`"]:::stage
+    OL["`**Outline**
+    H1 · H2/H3
+    meta description`"]:::stage
+    DR["`**Draft**
+    article body
+    internal links`"]:::stage
+    AUD{"`**SEO Audit**
+    10 rules
+    0–100 score`"}:::audit
+    RV["`**Revise**
+    fix warnings
+    re-audit`"]:::revise
+    PB(["`**Publish**`"]):::publish
+    WP["`WordPress
+    REST v2`"]:::cms
+    SH["`Shopify
+    Admin API`"]:::cms
+
+    KW --> RS --> OL --> DR --> AUD
+    AUD -->|score ≥ 80 · ready| PB
+    AUD -->|score 60–79 · needs work| RV
+    RV -->|re-audit| AUD
+    PB --> WP & SH
+
+    classDef input   fill:#3f3f46,stroke:#71717a,color:#f4f4f5,rx:8
+    classDef stage   fill:#27272a,stroke:#52525b,color:#e4e4e7
+    classDef audit   fill:#1c1917,stroke:#a16207,color:#fef08a
+    classDef revise  fill:#1c1917,stroke:#b45309,color:#fde68a
+    classDef publish fill:#14532d,stroke:#16a34a,color:#bbf7d0,rx:8
+    classDef cms     fill:#172554,stroke:#3b82f6,color:#bfdbfe

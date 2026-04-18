@@ -2,6 +2,93 @@
 
 All notable changes to SEOBot are documented here. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.7.0] — 2026-04-19 — Phase 7: Docs, Diagrams & Showcase Polish
+
+### Added
+
+- `scripts/generate-hero.mjs` — Gemini Imagen 4.0 hero image generator; guards missing API key with `process.exit(1)` before any API call; writes binary PNG via `fs.writeFile` (no shell commands)
+- `scripts/generate-diagrams.ts` — Mermaid CLI diagram renderer; uses `execFile` (not `exec`) — all arguments passed as an array, never shell-interpolated; breaks on ENOENT to surface missing `mmdc` binary early
+- `scripts/generate-mockups.ts` — Playwright headless Chromium screenshots; validates source HTML existence before launching browser; loads pages via `file://` protocol (zero network access)
+- `docs/diagrams/pipeline-flow.mmd` — Keyword → Research → Outline → Draft → SEO Audit → Publish flowchart
+- `docs/diagrams/cms-publish-sequence.mmd` — Full sequence diagram: credential decrypt RPC → publish job → CMS adapter → WP/Shopify REST → DB update; includes retry/idempotency note
+- `docs/diagrams/schema.mmd` — ER diagram for all 9 tables with field types, constraints, and relationship cardinality
+- `docs/diagrams/architecture.mmd` — System architecture: browser → server actions → pipeline/SEO/CMS layers → Supabase + external APIs
+- `docs/mockups/keyword-input.html` — Fully self-contained dark-themed keyword input page mockup (no CDN, no external scripts)
+- `docs/mockups/article-preview.html` — Article preview + SEO panel mockup (10-rule verdict list, score badge, internal links toggle)
+- `docs/mockups/publish-dashboard.html` — CMS connections grid + publish jobs table mockup
+- `README.md` — Full rewrite: badges, ASCII pipeline diagram, architecture table, feature tiers, quick-start, FAQ; no proprietary weights or methodology
+- `SETUP.md` — Environment variable reference (all values `operator-supplied`), database migration steps, asset generation prerequisites, security notes
+- `docs/architecture.md` — High-level design doc: layer overview, data model, RLS, CMS credential security, security decisions table
+- `docs/seo-rules.md` — Per-rule documentation (10 rules): verdict conditions, SEO rationale, formula reference; scoring weights deliberately omitted (operator config)
+- `docs/cms-integrations.md` — WordPress REST API v2 + Shopify Admin API 2025-01 reference: endpoints, auth patterns, payload shapes, taxonomy resolution, critical quirks (tags as CSV, WP POST-for-update)
+- `package.json` — Added `@google/genai`, `@mermaid-js/mermaid-cli`, `@playwright/test` to devDependencies (asset generation scripts only — not bundled with Next.js app)
+
+### Security
+
+- All child-process invocations use `execFile` (not `exec`) — shell injection surface eliminated
+- `generate-hero.mjs` guards `GEMINI_API_KEY` absence with an actionable error and `process.exit(1)` before constructing the API client — key is never logged
+- Mockup HTML files contain no external resource fetches — screenshots are produced from local static HTML only
+- `SETUP.md` explicitly documents which secrets are server-only and why the `GEMINI_API_KEY` must not be set in the Vercel deployment environment
+
+---
+
+## [0.6.0] — 2026-04-18 — Phase 6: SEO Validation Layer
+
+### Added
+
+- `src/lib/seo/constants.ts` — `SEO_RULES` registry (10 keys), `WEIGHTS` (runtime guard: must sum to 100), `THRESHOLDS` (ready/needs_work/reject tiers), and per-rule limit constants (`H1_LIMITS`, `META_LIMITS`, `DENSITY_LIMITS`, `READABILITY_LIMITS`, `INTERNAL_LINK_LIMITS`)
+- `src/lib/seo/scoring.ts` — `computeScore(results)` → weighted 0–100 integer; `scoreToVerdict(score)` → `'ready' | 'needs_work' | 'reject'`; `buildSeoReport(articleId, results)` → `SEOReport`
+- `src/lib/seo/validators/h1.ts` — `validateH1Length()` (30–70 pass, 71–100 warn, else fail) + `validateH1Keyword()` (exact match → pass, ≥ 75% word coverage → warn)
+- `src/lib/seo/validators/meta-description.ts` — `validateMetaLength()` (150–160 pass, 120–149 or 161–175 warn) + `validateMetaKeyword()`
+- `src/lib/seo/validators/heading-hierarchy.ts` — walks consecutive section levels; skip > 1 is a violation; level drops allowed (closing a subsection)
+- `src/lib/seo/validators/keyword-density.ts` — phrase-level density via `indexOf` loop (ReDoS-safe — no regex on untrusted input); 0.8–2.5% pass, 0.5–0.79% or 2.6–3.5% warn
+- `src/lib/seo/validators/readability.ts` — Flesch Reading Ease (206.835 − 1.015 × ASL − 84.6 × ASW); vowel-group syllable approximation; ≥ 60 pass, 45–59 warn
+- `src/lib/seo/validators/internal-links.ts` — Markdown link extraction; deduplicates by href; filters external/anchor-only; ≥ 2 unique internal links pass, 1 warn, 0 fail
+- `src/lib/seo/validators/schema-org.ts` — `Set` of 5 valid types: `Article`, `BlogPosting`, `NewsArticle`, `HowTo`, `FAQPage`; missing or unrecognised → fail
+- `src/lib/seo/validators/canonical.ts` — `new URL()` validation; `null` → warn, valid `https:` absolute URL → pass, malformed/relative/http → fail
+- `src/lib/seo/validators/index.ts` — barrel + `validateArticle(articleId, draft, keyword): SEOReport` — pure, synchronous, no I/O
+- `tests/seo-validators.test.ts` — 68 tests: constants sanity (weight sum), all 8 validators, edge cases, `computeScore`, `scoreToVerdict`, full `validateArticle` integration with `GOOD_DRAFT` (score ≥ 80) and `BAD_DRAFT` (several fails)
+
+### Security
+
+- `server-only` on all SEO library files — prevents scoring weights from being bundled into the client
+- Keyword density validator uses `indexOf` loop, not regex — no ReDoS exposure on operator-supplied keyword phrases
+- `noUncheckedIndexedAccess` guard pattern: `sections[i-1]` and `sections[i]` checked for `undefined` before use in the heading hierarchy validator
+
+---
+
+## [0.5.0] — 2026-04-18 — Phase 5: UI Layer
+
+### Added
+
+- `src/app/page.tsx` — Public landing page: hero with ASCII pipeline diagram, 3-step workflow, architecture callout cards, pricing tiers (Starter $49 / Agency $199 / Enterprise)
+- `src/app/(app)/layout.tsx` — App shell: sidebar (desktop, w-56) + top-nav (mobile); both built from `NAV_LINKS` constant
+- `src/app/(app)/dashboard/page.tsx` — 4 stats cards (keywords tracked, articles generated, published, avg SEO score) + recent keywords table + top article card
+- `src/app/(app)/keywords/page.tsx` — Keyword input form + tracked keywords table with difficulty bar and intent badges
+- `src/app/(app)/articles/page.tsx` — Articles index list with SEO score, status, word count
+- `src/app/(app)/articles/[id]/page.tsx` — Two-column layout: article preview (H2/H3 section cards) + SEO panel (score badge + rule list); `generateStaticParams()` for demo IDs
+- `src/app/(app)/publish/page.tsx` — CMS connections grid + publish job table
+- `src/components/layout/nav-links.tsx` — Active-state nav via `usePathname()` (`'use client'`)
+- `src/components/keywords/keyword-input-form.tsx` — Controlled form with intent select (`'use client'`)
+- `src/components/keywords/keyword-table.tsx` — Difficulty bar (green/yellow/red threshold), intent badge, link to article
+- `src/components/articles/article-preview.tsx` — H2/H3 section cards with word counts (server component)
+- `src/components/articles/seo-panel.tsx` — Score badge + pass/warn/fail verdict list (server component)
+- `src/components/articles/internal-links-panel.tsx` — Accept/reject toggle with local state (`'use client'`)
+- `src/components/publish/cms-connection-card.tsx` — Provider, status badge, siteUrl, last-checked timestamp
+- `src/components/publish/publish-job-table.tsx` — Status badges, external URL link
+- `src/components/pricing/pricing-tiers.tsx` — Starter / Agency (highlighted) / Enterprise tier cards
+- `src/lib/demo-data.ts` — All fixture data: keywords, articles, SEO verdicts, internal links, CMS connections, publish jobs, stats (all fictional: ForgeTorque, LuxDermis, VeloCargo)
+- `vitest.config.ts` — Added `css: false`; `@tailwindcss/postcss` added to devDeps
+
+### Design decisions
+
+- `'use client'` only where required: `nav-links` (usePathname), `keyword-input-form` (useState), `internal-links-panel` (toggle state)
+- SEO verdict colors: pass=emerald-400, warn=yellow-400, fail=red-400 (consistent with article preview panel)
+- JSON fixture imports use `as unknown as T` not `satisfies T` — TypeScript widens JSON string literals to `string`, which fails literal union type checks
+- Landing page at `app/page.tsx` (not a route group) — overwriting Phase 1 placeholder avoids route-group root conflicts
+
+---
+
 ## [0.4.0] — 2026-04-18 — Phase 4: CMS Integration Skeleton ★
 
 ### Added

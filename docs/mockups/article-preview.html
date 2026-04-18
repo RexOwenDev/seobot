@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<!--
+  SEOBot — Article Preview mockup
+  Purely static — no external resources, no scripts, no network requests.
+  Screenshot target: 1440 × 900 viewport.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1440" />
+  <title>SEOBot — Article Preview</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #18181b;
+      --surface:   #27272a;
+      --border:    #3f3f46;
+      --muted:     #71717a;
+      --text:      #f4f4f5;
+      --text-2:    #a1a1aa;
+      --accent:    #34d399;
+      --accent-bg: #052e16;
+      --blue:      #60a5fa;
+      --blue-bg:   #172554;
+      --yellow:    #fbbf24;
+      --yellow-bg: #422006;
+      --red:       #f87171;
+      --red-bg:    #450a0a;
+      --radius:    6px;
+      --font:      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body { background: var(--bg); color: var(--text); font-family: var(--font);
+           font-size: 14px; line-height: 1.5; display: flex; height: 900px; overflow: hidden; }
+
+    /* ── Sidebar ── */
+    .sidebar { width: 224px; background: var(--surface); border-right: 1px solid var(--border);
+               display: flex; flex-direction: column; flex-shrink: 0; padding: 16px 0; }
+    .logo { padding: 0 16px 20px; display: flex; align-items: center; gap: 8px; }
+    .logo-icon { width: 28px; height: 28px; background: var(--accent-bg); border: 1px solid var(--accent);
+                 border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .logo-text { font-weight: 600; font-size: 15px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 16px; color: var(--text-2); font-size: 13px; }
+    .nav-item.active { background: #3f3f46; color: var(--text); border-radius: 4px; margin: 0 8px; padding: 8px; }
+
+    /* ── Main ── */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .topbar { height: 56px; border-bottom: 1px solid var(--border); display: flex;
+              align-items: center; padding: 0 24px; gap: 12px; }
+    .topbar-title { font-weight: 600; font-size: 15px; flex: 1; overflow: hidden;
+                    text-overflow: ellipsis; white-space: nowrap; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px;
+           border-radius: var(--radius); font-size: 13px; font-weight: 500; cursor: pointer; border: none; }
+    .btn-primary { background: var(--accent); color: #052e16; }
+    .btn-ghost   { background: transparent; border: 1px solid var(--border); color: var(--text-2); }
+
+    /* ── Two-column content ── */
+    .content { flex: 1; display: flex; overflow: hidden; }
+
+    /* ── Article pane ── */
+    .article-pane { flex: 1; overflow-y: auto; padding: 32px; border-right: 1px solid var(--border); }
+    .article-meta { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; }
+    .meta-chip { font-size: 11px; padding: 3px 8px; border-radius: 99px;
+                 background: var(--surface); border: 1px solid var(--border); color: var(--text-2); }
+    .article-h1 { font-size: 26px; font-weight: 700; line-height: 1.3; margin-bottom: 12px; }
+    .article-meta-desc { color: var(--text-2); font-size: 13px; line-height: 1.6; margin-bottom: 24px;
+                          padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+
+    .section { margin-bottom: 20px; background: var(--surface); border: 1px solid var(--border);
+               border-radius: 8px; padding: 16px; }
+    .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .level-badge { font-size: 10px; background: var(--bg); border: 1px solid var(--border);
+                   border-radius: 4px; padding: 2px 6px; color: var(--muted); font-family: monospace; }
+    .section-h2 { font-size: 15px; font-weight: 600; }
+    .section-h3 { font-size: 13px; font-weight: 600; color: var(--text-2); }
+    .section-body { font-size: 12px; color: var(--muted); line-height: 1.6; margin-top: 6px; }
+    .section-wc { font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+    /* ── SEO panel ── */
+    .seo-pane { width: 320px; flex-shrink: 0; overflow-y: auto; padding: 24px; }
+    .score-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+                  padding: 20px; text-align: center; margin-bottom: 20px; }
+    .score-value { font-size: 48px; font-weight: 700; color: var(--accent); line-height: 1; }
+    .score-label { font-size: 12px; color: var(--text-2); margin-top: 4px; }
+    .verdict-badge { display: inline-block; margin-top: 10px; padding: 4px 14px;
+                     border-radius: 99px; font-size: 12px; font-weight: 600;
+                     background: var(--accent-bg); color: var(--accent); border: 1px solid #16a34a; }
+    .verdict-warn-badge { background: var(--yellow-bg); color: var(--yellow); border-color: var(--yellow); }
+
+    .rules-section-title { font-size: 11px; color: var(--muted); text-transform: uppercase;
+                            letter-spacing: 0.07em; margin-bottom: 10px; }
+    .rule { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0;
+            border-bottom: 1px solid var(--border); }
+    .rule:last-child { border-bottom: none; }
+    .rule-icon { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center;
+                 justify-content: center; font-size: 10px; flex-shrink: 0; margin-top: 1px; }
+    .icon-pass { background: var(--accent-bg); color: var(--accent); border: 1px solid #16a34a; }
+    .icon-warn { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow); }
+    .icon-fail { background: var(--red-bg);    color: var(--red);    border: 1px solid var(--red); }
+    .rule-name { font-size: 12px; font-weight: 500; }
+    .rule-msg  { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+
+    /* ── Internal links panel ── */
+    .links-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+                  padding: 16px; margin-top: 16px; }
+    .links-title { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+    .link-row { display: flex; align-items: center; gap: 8px; padding: 7px 0;
+                border-bottom: 1px solid var(--border); }
+    .link-row:last-child { border-bottom: none; }
+    .link-text { font-size: 12px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .link-score { font-size: 11px; color: var(--muted); }
+    .toggle { width: 30px; height: 16px; background: var(--accent); border-radius: 8px; position: relative; flex-shrink: 0; }
+    .toggle-off { background: var(--border); }
+    .toggle::after { content: ''; position: absolute; width: 12px; height: 12px; background: white;
+                     border-radius: 50%; top: 2px; right: 2px; }
+    .toggle-off::after { right: auto; left: 2px; }
+  </style>
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    <span class="logo-text">SEOBot</span>
+  </div>
+  <div class="nav-item">📊 Dashboard</div>
+  <div class="nav-item">🔍 Keywords</div>
+  <div class="nav-item active">📝 Articles</div>
+  <div class="nav-item">🚀 Publish</div>
+  <div style="margin-top:auto;padding:16px;border-top:1px solid var(--border);font-size:12px;">
+    <div style="color:var(--muted);">Workspace</div>
+    <div style="font-weight:600;margin-top:2px;">ForgeTorque Agency</div>
+  </div>
+</nav>
+
+<!-- ── Main ── -->
+<div class="main">
+  <div class="topbar">
+    <span class="topbar-title">Best Industrial Torque Wrenches for Commercial Shops 2025</span>
+    <button class="btn btn-ghost">Edit</button>
+    <button class="btn btn-primary">🚀 Publish</button>
+  </div>
+
+  <div class="content">
+
+    <!-- Article pane -->
+    <div class="article-pane">
+      <div class="article-meta">
+        <span class="meta-chip">1,847 words</span>
+        <span class="meta-chip">7 min read</span>
+        <span class="meta-chip">Article</span>
+        <span class="meta-chip">schema.org ✓</span>
+        <span class="meta-chip" style="color:var(--accent);border-color:#16a34a;">canonical ✓</span>
+      </div>
+
+      <div class="article-h1">Best Industrial Torque Wrenches for Commercial Shops 2025</div>
+      <div class="article-meta-desc">
+        Find the best industrial torque wrenches for commercial shops in 2025.
+        Our expert guide covers accuracy ratings, build quality, and the best value across top brands.
+        <span style="color:var(--muted);font-size:11px;display:block;margin-top:6px;">
+          Meta description · 157 chars
+        </span>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="level-badge">H2</span>
+          <span class="section-h2">Why Torque Accuracy Matters in Commercial Settings</span>
+        </div>
+        <div class="section-body">Proper torque application prevents bolt failures in high-cycle environments.
+        Under-torqued fasteners back out; over-torqued ones fatigue prematurely — both are costly callbacks...</div>
+        <div class="section-wc">~210 words</div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="level-badge">H2</span>
+          <span class="section-h2">Top Industrial Torque Wrenches Reviewed</span>
+        </div>
+        <div class="section-body">We evaluated click-type, dial-type, and digital torque wrenches
+        across four commercial workshops over a six-week period...</div>
+        <div class="section-wc">~380 words</div>
+      </div>
+
+      <div class="section" style="margin-left:20px;border-color:#52525b;">
+        <div class="section-header">
+          <span class="level-badge">H3</span>
+          <span class="section-h3">Best Click-Type: Snap-on QJNL250B</span>
+        </div>
+        <div class="section-body">Dual-direction capability, ±3% accuracy, and a positive click feedback that's audible in a noisy bay...</div>
+        <div class="section-wc">~145 words</div>
+      </div>
+
+      <div class="section" style="margin-left:20px;border-color:#52525b;">
+        <div class="section-header">
+          <span class="level-badge">H3</span>
+          <span class="section-h3">Best Value: CDI Torque 2503MFRPH</span>
+        </div>
+        <div class="section-body">Micrometer-style adjustment, 1/2" drive, 30-250 ft-lbs range with ±4% accuracy in both directions...</div>
+        <div class="section-wc">~130 words</div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span class="level-badge">H2</span>
+          <span class="section-h2">How to Choose the Right Range for Your Shop</span>
+        </div>
+        <div class="section-body">Match the wrench range to your most common jobs. A 1/2" drive covering 25–250 ft-lbs handles most automotive work...</div>
+        <div class="section-wc">~220 words</div>
+      </div>
+    </div>
+
+    <!-- SEO Panel -->
+    <div class="seo-pane">
+      <div class="score-card">
+        <div class="score-value">94</div>
+        <div class="score-label">SEO Score</div>
+        <div class="verdict-badge">✓ Ready to Publish</div>
+      </div>
+
+      <div class="rules-section-title">Validation Rules</div>
+
+      <div class="rule">
+        <div class="rule-icon icon-pass">✓</div>
+        <div>
+          <div class="rule-name">H1 Length</div>
+          <div class="rule-msg">55 chars — within 30–70 target range</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon icon-pass">✓</div>
+        <div>
+          <div class="rule-name">H1 Keyword</div>
+          <div class="rule-msg">Primary keyword present in H1</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon icon-pass">✓</div>
+        <div>
+          <div class="rule-name">Meta Description</div>
+          <div class="rule-msg">157 chars — within 150–160 range</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon icon-pass">✓</div>
+        <div>
+          <div class="rule-name">Meta Keyword</div>
+          <div class="rule-msg">Keyword found in meta description</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon icon-pass">✓</div>
+        <div>
+          <div class="rule-name">Heading Hierarchy</div>
+          <div class="rule-msg">No skipped levels — H2 → H3 only</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon icon-warn">!</div>
+        <div>
+          <div class="rule-name">Keyword Density</div>
+          <div class="rule-msg">2.7% — slightly above 2.5% target</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon icon-pass">✓</div>
+        <div>
+          <div class="rule-name">Readability</div>
+          <div class="rule-msg">Flesch 64 — suitable for general audience</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon icon-pass">✓</div>
+        <div>
+          <div class="rule-name">Internal Links</div>
+          <div class="rule-msg">3 accepted internal links</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon icon-pass">✓</div>
+        <div>
+          <div class="rule-name">Schema.org Type</div>
+          <div class="rule-msg">Article — valid type for this content</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon icon-pass">✓</div>
+        <div>
+          <div class="rule-name">Canonical URL</div>
+          <div class="rule-msg">https://forgetorque.com/…</div>
+        </div>
+      </div>
+
+      <!-- Internal links -->
+      <div class="links-card">
+        <div class="links-title">Internal Links (3)</div>
+        <div class="link-row">
+          <div class="link-text">Best Torque Wrench Brands Ranked</div>
+          <div class="link-score">rel 89</div>
+          <div class="toggle"></div>
+        </div>
+        <div class="link-row">
+          <div class="link-text">How to Calibrate a Torque Wrench</div>
+          <div class="link-score">rel 77</div>
+          <div class="toggle"></div>
+        </div>
+        <div class="link-row">
+          <div class="link-text">1/2-Inch vs 3/8-Inch Drive: Which?</div>
+          <div class="link-score">rel 65</div>
+          <div class="toggle toggle-off"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

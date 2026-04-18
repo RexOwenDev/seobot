@@ -1,0 +1,34 @@
+%%{init: {'theme': 'dark'}}%%
+sequenceDiagram
+    autonumber
+    participant Route  as Next.js API Route
+    participant Svc    as CMS Service
+    participant DB     as Supabase
+    participant WP     as WordPress REST v2
+    participant SH     as Shopify Admin API
+
+    Route->>DB: decrypt_cms_credentials(cmsConnectionId)<br/>via service-role RPC (never client-side)
+    DB-->>Route: decrypted credentials (in-memory only)
+
+    Route->>DB: INSERT publish_jobs (status=pending, idempotency_key)
+    DB-->>Route: job.id
+
+    Route->>Svc: draftToCanonical(draft, options)
+    Svc-->>Route: CanonicalPublishPayload
+
+    alt WordPress target
+        Route->>Svc: canonicalToWordPress(payload, { categoryIds, tagIds })
+        Svc-->>Route: WordPressPostCreate
+        Route->>WP: POST /wp/v2/posts (Basic auth — App Password)
+        WP-->>Route: { id, link, status }
+    else Shopify target
+        Route->>Svc: canonicalToShopify(payload, { blogId, author })
+        Svc-->>Route: ShopifyArticleCreate
+        Route->>SH: POST /admin/api/2025-01/blogs/:id/articles.json<br/>(X-Shopify-Access-Token)
+        SH-->>Route: { article: { id, handle, published_at } }
+    end
+
+    Route->>DB: UPDATE publish_jobs<br/>(status=published, externalUrl, completedAt)
+    DB-->>Route: ok
+
+    Note over Route,DB: On any failure: UPDATE publish_jobs (status=failed, attempts+1)<br/>Retry up to 3× with idempotency_key ensuring no duplicate posts
