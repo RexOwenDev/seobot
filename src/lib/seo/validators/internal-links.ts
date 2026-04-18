@@ -12,7 +12,6 @@ function extractMarkdownLinks(markdown: string): readonly { text: string; href: 
   const RE = /\[([^\]]+)\]\(([^)]+)\)/g;
   const links: { text: string; href: string }[] = [];
   let m: RegExpExecArray | null;
-  // eslint-disable-next-line no-cond-assign
   while ((m = RE.exec(markdown)) !== null) {
     const text = m[1] ?? '';
     const href = m[2] ?? '';

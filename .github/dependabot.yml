@@ -1,0 +1,45 @@
+version: 2
+
+updates:
+  # npm dependencies
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/Toronto
+    open-pull-requests-limit: 10
+    groups:
+      # Batch all @typescript-eslint packages together
+      typescript-eslint:
+        patterns:
+          - "@typescript-eslint/*"
+      # Batch Supabase packages together
+      supabase:
+        patterns:
+          - "@supabase/*"
+      # Batch React + React DOM together
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+    ignore:
+      # Next.js major bumps require manual migration — pin to current major
+      - dependency-name: "next"
+        update-types: ["version-update:semver-major"]
+      # Tailwind v4 -> v5 requires config migration
+      - dependency-name: "tailwindcss"
+        update-types: ["version-update:semver-major"]
+
+  # GitHub Actions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/Toronto
+    open-pull-requests-limit: 5

@@ -38,6 +38,9 @@ docs/internal/
 .claude/
 .cursor/
 
+# TypeScript incremental build cache
+tsconfig.tsbuildinfo
+
 # Generated artifacts (regenerated via scripts)
 docs/hero.png
 docs/diagrams/*.svg

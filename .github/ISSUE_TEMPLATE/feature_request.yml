@@ -1,0 +1,56 @@
+name: Feature Request
+description: Propose a new feature or improvement
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement! Please provide as much context as possible.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What problem does this feature solve? Describe the friction you're experiencing.
+      placeholder: "As a [role], I find it difficult to [do X] because [reason]..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe your ideal solution. Be specific about the behavior you want.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What workarounds or alternative approaches have you tried?
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Feature area
+      options:
+        - Pipeline (keyword → research → outline → draft → refine)
+        - SEO Validation
+        - CMS Integration (WordPress / Shopify)
+        - UI / Dashboard
+        - API / Data model
+        - Docs / Developer experience
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and this is not a duplicate
+          required: true
+        - label: This request is scoped to the public skeleton, not operator-specific methodology
+          required: true

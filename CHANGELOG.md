@@ -2,6 +2,31 @@
 
 All notable changes to SEOBot are documented here. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.8.0] — 2026-04-19 — Phase 8: OSS Launch Prep
+
+### Added
+
+- `CONTRIBUTING.md` — Developer guide: prerequisites, setup, development workflow, coding standards (strict TS, `server-only` boundary, `execFile` requirement, Zod validation), testing expectations, PR process, architecture overview
+- `SECURITY.md` — Security policy: vulnerability reporting procedure, full security decisions table, operator deployment checklist, out-of-scope items
+- `.github/ISSUE_TEMPLATE/bug_report.yml` — GitHub issue form: environment info, reproduction steps, expected vs actual, OS dropdown
+- `.github/ISSUE_TEMPLATE/feature_request.yml` — GitHub issue form: problem statement, proposed solution, feature area dropdown, scope guard checkbox
+- `.github/PULL_REQUEST_TEMPLATE.md` — PR checklist: type-check / lint / test gates, security checklist (no secrets, Zod validation, `server-only` boundary, `execFile` usage, secrecy model guard)
+- `.github/workflows/ci.yml` — GitHub Actions CI: three parallel jobs (type-check, lint, test) on push/PR to `main`, Node.js 24, npm cache, `concurrency` group with `cancel-in-progress`
+- `.github/dependabot.yml` — Weekly Dependabot updates for npm + GitHub Actions; groups `@typescript-eslint/*`, `@supabase/*`, React packages; ignores Next.js + Tailwind major bumps
+
+### Changed
+
+- `eslint.config.mjs` — Migrated from `FlatCompat` bridge to native ESLint v9 flat config; removes circular-reference crash with Next.js 16's legacy plugin structure; adds `varsIgnorePattern: '^_'` to `no-unused-vars` rule
+- `package.json` — `lint` script changed from `next lint` → `eslint src` (Next.js 16 removed the `next lint` CLI command in v16.2.4)
+- `src/app/api/cms/publish/route.ts` — Split `NextRequest` to `import type` (consistent-type-imports compliance)
+- `src/app/api/cms/test-connection/route.ts` — Same `import type` split
+- `src/lib/seo/validators/internal-links.ts` — Removed stale `// eslint-disable-next-line no-cond-assign` directive (rule not enabled in new flat config)
+
+### Security
+
+- Final `git grep` scan across all source files confirms zero hardcoded credentials — all references are `process.env.*` reads or empty `.env.example` placeholders
+- CI enforces type-check + lint + test on every push and PR — drift from passing baseline is immediately surfaced
+
 ## [0.7.0] — 2026-04-19 — Phase 7: Docs, Diagrams & Showcase Polish
 
 ### Added
