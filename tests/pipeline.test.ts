@@ -21,11 +21,13 @@ import draftFixtureJson from './fixtures/pipeline/draft.json';
 import refinedDraftFixtureJson from './fixtures/pipeline/refined-draft.json';
 import internalLinksFixtureJson from './fixtures/pipeline/internal-links.json';
 
-const researchFixture = researchFixtureJson as unknown as ResearchReport;
-const outlineFixture = outlineFixtureJson as unknown as Outline;
-const draftFixture = draftFixtureJson as unknown as Draft;
-const refinedDraftFixture = refinedDraftFixtureJson as unknown as Draft;
-const internalLinksFixture = internalLinksFixtureJson as unknown as InternalLinkSuggestion[];
+// These casts are compile-time structural checks: if a fixture JSON diverges from
+// the TypeScript type, tsc will error here even though the variables are unused at runtime.
+const _researchFixture = researchFixtureJson as unknown as ResearchReport;
+const _outlineFixture = outlineFixtureJson as unknown as Outline;
+const _draftFixture = draftFixtureJson as unknown as Draft;
+const _refinedDraftFixture = refinedDraftFixtureJson as unknown as Draft;
+const _internalLinksFixture = internalLinksFixtureJson as unknown as InternalLinkSuggestion[];
 
 const KEYWORD_INPUT = {
   phrase: 'best industrial torque wrenches for commercial automotive shops',

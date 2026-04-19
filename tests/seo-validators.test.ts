@@ -198,6 +198,22 @@ describe('validateH1 — keyword loose match warns, not fails', () => {
   });
 });
 
+describe('validateH1 — empty keyword fails', () => {
+  // String.prototype.includes('') always returns true — an empty keyword would
+  // incorrectly pass every article without the guard added in Phase A.
+  it('fails when keyword is empty string', () => {
+    const results = validateH1(GOOD_DRAFT, '');
+    const r = results.find(r => r.key === SEO_RULES.H1_KEYWORD);
+    expect(r?.verdict).toBe('fail');
+  });
+
+  it('fails when keyword is whitespace-only (trims to empty)', () => {
+    const results = validateH1(GOOD_DRAFT, '   ');
+    const r = results.find(r => r.key === SEO_RULES.H1_KEYWORD);
+    expect(r?.verdict).toBe('fail');
+  });
+});
+
 // ── Meta description validators ───────────────────────────────────────────────
 
 describe('validateMetaDescription — good draft', () => {
@@ -259,6 +275,22 @@ describe('validateMetaDescription — length edge cases', () => {
 
   it('176 chars fails', () => {
     const r = validateMetaDescription(makeDraft('A'.repeat(176)), '')[0];
+    expect(r?.verdict).toBe('fail');
+  });
+});
+
+describe('validateMetaDescription — empty keyword fails', () => {
+  // Same guard as validateH1Keyword: String.prototype.includes('') always returns
+  // true, so an empty keyword would score every meta description as 'pass'.
+  it('fails when keyword is empty string', () => {
+    const results = validateMetaDescription(GOOD_DRAFT, '');
+    const r = results.find(r => r.key === SEO_RULES.META_KEYWORD);
+    expect(r?.verdict).toBe('fail');
+  });
+
+  it('fails when keyword is whitespace-only (trims to empty)', () => {
+    const results = validateMetaDescription(GOOD_DRAFT, '   ');
+    const r = results.find(r => r.key === SEO_RULES.META_KEYWORD);
     expect(r?.verdict).toBe('fail');
   });
 });
@@ -355,8 +387,8 @@ describe('validateKeywordDensity — density thresholds', () => {
 describe('validateReadability — good draft', () => {
   it('passes with readable body text', () => {
     const r = validateReadability(GOOD_DRAFT);
-    // The good draft uses plain business English — should score ≥ 45 (warn or pass)
-    expect(['pass', 'warn']).toContain(r.verdict);
+    // The good draft uses plain monosyllabic business English — FRE comfortably ≥ 60.
+    expect(r.verdict).toBe('pass');
   });
 });
 
@@ -379,6 +411,24 @@ describe('validateReadability — very complex text', () => {
     const draft: Draft = { ...GOOD_DRAFT, bodyMarkdown: dense };
     const r = validateReadability(draft);
     expect(r.verdict).toBe('fail');
+  });
+});
+
+describe('validateReadability — trailing sentence counted (regex fix)', () => {
+  it('does not fail when the last sentence ends at the string boundary', () => {
+    // Old regex /[.!?]+[\s$]/g treated $ inside [] as a literal dollar-sign char,
+    // so the final sentence (not followed by whitespace) was never counted.
+    // That inflated the average-sentence-length term in the FRE formula, driving
+    // scores down and producing spurious 'fail' verdicts on readable text.
+    const sentences = Array.from(
+      { length: 15 },
+      (_, i) => `This is sentence number ${i + 1} in this test`,
+    );
+    // No trailing space — boundary-terminated final sentence.
+    const draft: Draft = { ...GOOD_DRAFT, bodyMarkdown: sentences.join('. ') + '.' };
+    const r = validateReadability(draft);
+    // Plain short sentences with no polysyllabic words must not fail.
+    expect(r.verdict).not.toBe('fail');
   });
 });
 
@@ -440,6 +490,19 @@ describe('validateInternalLinks — edge cases', () => {
     const r = validateInternalLinks(draft);
     // Anchor-only links don't count
     expect(r.verdict).toBe('fail');
+  });
+
+  it('does not count protocol-relative URLs as internal', () => {
+    // //cdn.example.com resolves to the current scheme but always points to
+    // an external host — the Phase A fix added startsWith('//') to isExternalLink.
+    const draft: Draft = {
+      ...GOOD_DRAFT,
+      bodyMarkdown:
+        '[Image](//cdn.example.com/img.jpg) and [script](//assets.site.net/app.js).',
+    };
+    const r = validateInternalLinks(draft);
+    expect(r.verdict).toBe('fail');
+    expect(r.details['internalLinkCount']).toBe(0);
   });
 });
 
