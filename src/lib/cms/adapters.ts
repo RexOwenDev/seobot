@@ -121,7 +121,10 @@ export function canonicalToWordPress(
     readonly featuredMediaId?: number;
   },
 ): WordPressPostCreate {
-  const post: WordPressPostCreate = {
+  // WP REST API rejects null values for some optional fields — omit rather than null.
+  // All optional fields are conditionally spread into a single return object to
+  // avoid duplicating the spreading logic across two branches.
+  return {
     title: payload.title,
     slug: payload.slug,
     content: payload.bodyHtml,
@@ -132,23 +135,7 @@ export function canonicalToWordPress(
         _yoast_wpseo_canonical: payload.canonicalUrl,
       }),
     },
-  };
-
-  // Only include optional fields when values are present —
-  // WP REST API ignores absent optional fields but rejects null values for some.
-  if (payload.excerpt != null) {
-    return {
-      ...post,
-      excerpt: payload.excerpt,
-      ...(payload.status === 'future' && payload.publishAt != null && { date: payload.publishAt }),
-      ...(options?.categoryIds?.length && { categories: options.categoryIds }),
-      ...(options?.tagIds?.length && { tags: options.tagIds }),
-      ...(options?.featuredMediaId != null && { featured_media: options.featuredMediaId }),
-    };
-  }
-
-  return {
-    ...post,
+    ...(payload.excerpt != null && { excerpt: payload.excerpt }),
     ...(payload.status === 'future' && payload.publishAt != null && { date: payload.publishAt }),
     ...(options?.categoryIds?.length && { categories: options.categoryIds }),
     ...(options?.tagIds?.length && { tags: options.tagIds }),
@@ -206,7 +193,7 @@ export function canonicalToShopify(
       body_html: payload.bodyHtml,
       blog_id: options.blogId,
       author: options.author,
-      // Shopify tags MUST be a CSV string — array would produce "[object Object]"
+      // Shopify tags MUST be a CSV string — array would produce "[object Object]".
       tags: payload.tags.join(',') || undefined,
       summary_html: payload.excerpt ?? undefined,
       published: payload.status === 'publish',

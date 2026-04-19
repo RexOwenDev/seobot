@@ -30,8 +30,10 @@ export function ArticlePreview({ article }: ArticlePreviewProps) {
       </div>
 
       <div className="space-y-3">
-        {article.sections.map((section, i) => (
-          <SectionCard key={i} section={section} />
+        {article.sections.map(section => (
+          // Composite key: level+text. DemoSection has no id; text alone could
+          // collide for common headings like "Conclusion" at different levels.
+          <SectionCard key={`${section.level}-${section.text}`} section={section} />
         ))}
       </div>
     </div>

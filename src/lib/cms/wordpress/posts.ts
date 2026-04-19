@@ -1,5 +1,5 @@
 import 'server-only';
-import type { WordPressPostCreate, WordPressPostResponse, WordPressStatus } from '@/types/cms';
+import type { WordPressPostCreate, WordPressPostResponse } from '@/types/cms';
 import type { CmsOperationOutcome } from '@/types/cms';
 import type { WordPressClient } from './client';
 
@@ -44,7 +44,7 @@ export async function createPost(
     data: {
       ...WP_POST_FIXTURE,
       slug: payload.slug,
-      status: payload.status as WordPressStatus,
+      status: payload.status, // already WordPressStatus — cast was redundant
       title: { rendered: payload.title },
     },
     httpStatus: 201,
@@ -72,7 +72,7 @@ export async function updatePost(
       ...WP_POST_FIXTURE,
       id: postId,
       slug: payload.slug ?? WP_POST_FIXTURE.slug,
-      status: (payload.status ?? WP_POST_FIXTURE.status) as WordPressStatus,
+      status: payload.status ?? WP_POST_FIXTURE.status, // nullish coalescing infers WordPressStatus
     },
     httpStatus: 200,
   };

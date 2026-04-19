@@ -57,7 +57,7 @@ export const WP_ENDPOINTS = {
   posts: '/posts',
   post: (id: number) => `/posts/${id}`,
   media: '/media',
-  medium: (id: number) => `/media/${id}`,
+  mediaItem: (id: number) => `/media/${id}`, // renamed from 'medium' — consistent with the collection key
   categories: '/categories',
   category: (id: number) => `/categories/${id}`,
   tags: '/tags',
