@@ -69,7 +69,9 @@ export interface RuleResult {
 export interface SEOReport {
   readonly articleId: string;
   readonly overallScore: number;
-  readonly verdict: SeoVerdict;
+  // 'pending' is only valid on the article row before scoring runs; a completed
+  // SEOReport always has a concrete verdict. Exclude<> enforces this at the type level.
+  readonly verdict: Exclude<SeoVerdict, 'pending'>;
   readonly results: readonly RuleResult[];
   readonly createdAt: string;
 }

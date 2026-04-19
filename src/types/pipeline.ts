@@ -61,6 +61,11 @@ export interface InternalLinkSuggestion {
   readonly targetArticleId: string | null;
   readonly targetUrl: string | null;
   readonly positionHint: 'intro' | 'body' | 'conclusion';
+  /**
+   * Relevance confidence score in the range [0, 1].
+   * UI components display this as a percentage: `Math.round(relevanceScore * 100) + '%'`.
+   * Pipeline stubs and production AI output MUST use 0–1 floats, not 0–100 integers.
+   */
   readonly relevanceScore: number;
 }
 

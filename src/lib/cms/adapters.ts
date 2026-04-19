@@ -7,13 +7,36 @@ import type {
   ShopifyMetafield,
 } from '@/types/cms';
 
+/**
+ * Escapes HTML special characters in a plain-text string.
+ *
+ * Must be applied to any AI-generated content before it is interpolated into
+ * HTML tags. Without escaping, a model response containing `<script>` would be
+ * injected verbatim into the CMS payload and executed by the target browser.
+ *
+ * Order matters: `&` must be escaped first to avoid double-encoding.
+ */
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 // Phase 5: replace with a proper Unified.js remark → rehype pipeline.
 // This stub converts the most common Markdown patterns from our fixture data
 // to keep the canonical payload valid HTML without adding a parse dependency.
 function markdownToHtml(markdown: string): string {
   return markdown
     .split('\n\n')
-    .map(para => `<p>${para.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}</p>`)
+    .map(para => {
+      // Escape HTML entities first, then apply markdown → HTML transforms.
+      // This order ensures that raw AI content cannot inject HTML while still
+      // allowing our own <strong> and <br> tags to be rendered as markup.
+      const escaped = escapeHtml(para);
+      return `<p>${escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}</p>`;
+    })
     .join('\n');
 }
 
@@ -23,7 +46,9 @@ function buildArticleHtml(draft: Draft): string {
   const sections = draft.sections
     .map(section => {
       const tag = `h${section.level}` as 'h2' | 'h3' | 'h4';
-      return `<${tag}>${section.text}</${tag}>\n${markdownToHtml(section.bodyMarkdown)}`;
+      // escapeHtml on section.text: heading text comes directly from the AI draft
+      // and must not be treated as markup by the receiving CMS.
+      return `<${tag}>${escapeHtml(section.text)}</${tag}>\n${markdownToHtml(section.bodyMarkdown)}`;
     })
     .join('\n\n');
   return `${intro}\n\n${sections}`;

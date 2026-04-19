@@ -9,34 +9,35 @@ import type {
 const _SYSTEM_PROMPT = '// TODO: operator-supplied prompt — see internal methodology doc';
 const _USER_PROMPT_TEMPLATE = '// TODO: operator-supplied prompt — see internal methodology doc';
 
+// relevanceScore is 0–1 (not 0–100). The UI multiplies by 100 to display a percentage.
 const INTERNAL_LINKS_FIXTURE: readonly InternalLinkSuggestion[] = [
   {
     anchorText: 'ISO 6789 calibration certificate',
     targetArticleId: null,
     targetUrl: null,
     positionHint: 'body',
-    relevanceScore: 92,
+    relevanceScore: 0.92,
   },
   {
     anchorText: 'commercial wheel-end torque sequences',
     targetArticleId: null,
     targetUrl: null,
     positionHint: 'body',
-    relevanceScore: 87,
+    relevanceScore: 0.87,
   },
   {
     anchorText: 'ForgeTorque heavy-duty socket set',
     targetArticleId: null,
     targetUrl: null,
     positionHint: 'conclusion',
-    relevanceScore: 78,
+    relevanceScore: 0.78,
   },
   {
     anchorText: 'shop management system integrations',
     targetArticleId: null,
     targetUrl: null,
     positionHint: 'intro',
-    relevanceScore: 65,
+    relevanceScore: 0.65,
   },
 ];
 

@@ -45,7 +45,7 @@ The following decisions are implemented in the codebase and are NOT configurable
 | `REVOKE SELECT` on `vault.decrypted_secrets` | `supabase/migrations/` | Application role cannot read the raw encryption key |
 | Credential retrieval by UUID only | `src/lib/cms/` | No credential enumeration via predictable IDs |
 | `noUncheckedIndexedAccess: true` | `tsconfig.json` | Array/object index access returns `T \| undefined` — forces null checks |
-| CSP headers | `next.config.ts` | `script-src 'self'`, `connect-src 'self' <supabase>` |
+| CSP headers — `unsafe-eval` removed | `next.config.ts` | Next.js 16 App Router production builds do not require `eval`. `unsafe-inline` is retained because Next.js injects inline hydration scripts; a proper nonce-based CSP requires middleware not yet in scope for this skeleton. |
 | No CDN dependencies in mockup HTML | `docs/mockups/` | Static-only, zero external network requests |
 
 ---

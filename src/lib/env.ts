@@ -1,3 +1,5 @@
+import 'server-only'; // prevents serverEnv (which holds credentials) from being imported by client components
+
 import { z } from 'zod';
 
 const ServerEnvSchema = z.object({
@@ -6,7 +8,10 @@ const ServerEnvSchema = z.object({
   WORDPRESS_SITE_URL: z.string().url().optional(),
   WORDPRESS_USERNAME: z.string().optional(),
   WORDPRESS_APP_PASSWORD: z.string().optional(),
-  SHOPIFY_SHOP: z.string().optional(),
+  // Full Shopify domain: "{store}.myshopify.com"
+  // Handle rules: starts and ends with alphanumeric; hyphens allowed only in the middle.
+  // Trailing-hyphen form ("shop-.myshopify.com") is rejected — Shopify prohibits it.
+  SHOPIFY_SHOP: z.string().regex(/^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\.myshopify\.com$/).optional(),
   SHOPIFY_ADMIN_ACCESS_TOKEN: z.string().optional(),
   GSC_SERVICE_ACCOUNT_EMAIL: z.string().email().optional(),
   GSC_PRIVATE_KEY: z.string().optional(),
