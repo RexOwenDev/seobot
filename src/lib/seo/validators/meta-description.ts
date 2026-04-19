@@ -75,6 +75,17 @@ export function validateMetaKeyword(draft: Draft, keyword: string): RuleResult {
   const metaLower = draft.metaDescription.toLowerCase();
   const kwLower = keyword.toLowerCase().trim();
 
+  // Guard: String.prototype.includes('') always returns true, so an empty keyword
+  // would incorrectly score 'pass' for every article. Fail explicitly instead.
+  if (!kwLower) {
+    return {
+      key: SEO_RULES.META_KEYWORD,
+      verdict: 'fail',
+      message: 'No keyword provided — cannot validate meta description keyword presence',
+      details: { keyword, exactMatch: false },
+    };
+  }
+
   if (metaLower.includes(kwLower)) {
     return {
       key: SEO_RULES.META_KEYWORD,

@@ -47,7 +47,9 @@ export const WEIGHTS = {
 
 // Runtime guard (vitest tests also assert this; kept here as belt-and-suspenders).
 // A compile-time assertion isn't possible because TS can't reduce literal union types.
-if (process.env.NODE_ENV !== 'production') {
+// Guard runs unconditionally: a misconfigured weights table would silently score every
+// article incorrectly in production, not just in development.
+{
   const _sum = (Object.values(WEIGHTS) as number[]).reduce((a, b) => a + b, 0);
   if (_sum !== 100) {
     throw new Error(`SEO WEIGHTS must sum to 100, got ${_sum}`);

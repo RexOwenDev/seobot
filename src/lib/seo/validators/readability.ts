@@ -14,7 +14,8 @@ import { SEO_RULES, READABILITY_LIMITS } from '../constants';
 function countSyllables(word: string): number {
   const clean = word.toLowerCase().replace(/[^a-z]/g, '');
   if (clean.length === 0) return 0;
-  const matches = clean.match(/[aeiou]+/g);
+  // Include 'y' as a vowel — it acts as a vowel in words like "gym", "rhythm", "system"
+  const matches = clean.match(/[aeiouy]+/g);
   return Math.max(1, matches?.length ?? 1);
 }
 
@@ -30,11 +31,15 @@ function stripMarkdown(markdown: string): string {
 }
 
 /**
- * Counts sentences by splitting on terminal punctuation followed by a space or end.
+ * Counts sentences by splitting on terminal punctuation followed by whitespace or end-of-string.
  * Handles abbreviations poorly — acceptable for a readability stub.
+ *
+ * Fix note: the original `/[.!?]+[\s$]/g` had `$` inside a character class, making it
+ * a literal dollar sign rather than an end-of-string anchor. The final sentence of any
+ * text (not followed by whitespace) was therefore not counted. Replaced with a lookahead.
  */
 function countSentences(text: string): number {
-  const matches = text.match(/[.!?]+[\s$]/g);
+  const matches = text.match(/[.!?]+(?=\s|$)/g);
   // Minimum 1 sentence even if no terminal punctuation found
   return Math.max(1, matches?.length ?? 1);
 }
@@ -54,8 +59,8 @@ function countSentences(text: string): number {
  */
 function fleschReadingEase(text: string): number {
   const words = text.split(/\s+/).filter(w => w.length > 0);
-  if (words.length < 10) return 60; // too short to score meaningfully
-
+  // Note: the outer validateReadability guard ensures word count >= 50 before calling
+  // this function, so a separate < 10 guard here is unreachable dead code (removed).
   const wordCount = words.length;
   const sentenceCount = countSentences(text);
   const syllableCount = words.reduce((sum, word) => sum + countSyllables(word), 0);

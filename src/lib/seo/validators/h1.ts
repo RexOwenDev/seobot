@@ -80,6 +80,17 @@ export function validateH1Keyword(draft: Draft, keyword: string): RuleResult {
   const h1Lower = draft.h1.toLowerCase();
   const kwLower = keyword.toLowerCase().trim();
 
+  // Guard: String.prototype.includes('') always returns true, so an empty keyword
+  // would incorrectly score 'pass' for every article. Fail explicitly instead.
+  if (!kwLower) {
+    return {
+      key: SEO_RULES.H1_KEYWORD,
+      verdict: 'fail',
+      message: 'No keyword provided — cannot validate H1 keyword presence',
+      details: { keyword, h1: draft.h1, exactMatch: false },
+    };
+  }
+
   if (h1Lower.includes(kwLower)) {
     return {
       key: SEO_RULES.H1_KEYWORD,

@@ -34,6 +34,9 @@ function isExternalLink(href: string): boolean {
   return (
     trimmed.startsWith('http://') ||
     trimmed.startsWith('https://') ||
+    // Protocol-relative URLs (//cdn.example.com/...) are external — they resolve to
+    // the current page's scheme but always point to a different host.
+    trimmed.startsWith('//') ||
     trimmed.startsWith('mailto:') ||
     trimmed.startsWith('tel:')
   );

@@ -53,7 +53,9 @@ export function draftToCanonical(
     title: draft.h1,
     slug: draft.slug,
     bodyHtml: buildArticleHtml(draft),
-    excerpt: draft.bodyMarkdown.split('\n\n')[0] ?? null,
+    // Trim whitespace and coerce empty string to null: `?? null` would pass '' through
+    // because nullish coalescing only replaces null/undefined, not empty string.
+    excerpt: draft.bodyMarkdown.split('\n\n')[0]?.trim() || null,
     metaDescription: draft.metaDescription,
     canonicalUrl: draft.canonicalUrl,
     categories: options.categories ?? [],
