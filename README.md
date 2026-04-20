@@ -1,95 +1,171 @@
-# SEOBot — AI Content & SEO Pipeline
+<p align="center">
+  <img src="docs/hero-banner.jpg" alt="SEOBot — AI Content Pipeline" width="100%" />
+</p>
 
-> **Portfolio showcase · skeleton only.** Production-quality architecture for a keyword-driven SEO article pipeline with WordPress & Shopify publishing. Demonstrates TypeScript discipline, typed CMS adapters, a weighted SEO validation layer, and agency-grade pipeline design. No live API calls. No proprietary prompts. Operator methodology required for production use.
+<h1 align="center">SEOBot — AI Content & SEO Pipeline</h1>
 
-![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178c6?logo=typescript&logoColor=white)
-![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
-![Tests](https://img.shields.io/badge/tests-115%20passing-22c55e)
-![License](https://img.shields.io/badge/license-MIT-green)
+<p align="center">
+  <strong>Production-architecture showcase · TypeScript · Next.js 16 · Supabase · WordPress & Shopify</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" />
+  <img src="https://img.shields.io/badge/tests-121%20passing-22c55e?logo=vitest" />
+  <img src="https://img.shields.io/badge/vulnerabilities-0-22c55e" />
+  <img src="https://img.shields.io/badge/audit-A--grade-22c55e" />
+  <img src="https://img.shields.io/badge/license-MIT-blue" />
+</p>
+
+---
+
+## The problem this solves
+
+Content teams at agencies and e-commerce brands spend **hours per article** doing what a machine can do in seconds: researching SERP structure, writing to H1/H2/H3 hierarchy, checking keyword density and readability, then copy-pasting into WordPress or Shopify. SEOBot automates the entire loop — from a single keyword phrase to a fully validated, CMS-ready article.
+
+> **This repo is a portfolio-grade architecture skeleton.** It demonstrates the engineering discipline required to build this system at scale — typed pipeline stages, a weighted SEO validation engine, dual-CMS adapters, and a security-hardened data layer. The AI prompts and operator configuration live outside this repo (the proprietary methodology layer).
 
 ---
 
 ## What it does
 
-```
-keyword phrase
-      │
-      ▼
-  Research ──► Outline ──► Draft ──► SEO Audit ──► Publish
-                                         │
-                               ┌─────────┴──────────┐
-                            WordPress           Shopify
-                           REST API v2       Admin API
-```
+<p align="center">
+  <img src="docs/pipeline-architecture.jpg" alt="Pipeline Architecture — Research → Outline → Draft → SEO Audit → Publish" width="100%" />
+</p>
 
-1. **Input** a target keyword phrase (plus intent, target length, locale)
-2. **Research** the SERP — competitor headings, search intent, entities to cover
-3. **Outline** with a proper H1/H2/H3 hierarchy and meta description
-4. **Draft** the article body with suggested internal links
-5. **Validate** against a 10-rule weighted SEO rubric — 0–100 score, pass/warn/fail per rule
-6. **Publish** one-click to WordPress or Shopify via typed REST adapters
+One keyword phrase enters. A validated, CMS-published article comes out.
+
+| Stage | What happens |
+|---|---|
+| **1 · Research** | SERP competitor analysis — headings, entities, search intent classification |
+| **2 · Outline** | H1/H2/H3 hierarchy, meta description draft, slug, target word count, schema.org type |
+| **3 · Draft** | Full article body with suggested internal links, reading time, word count |
+| **4 · SEO Audit** | 10-rule weighted validator → 0–100 score with pass/warn/fail per rule |
+| **5 · Publish** | One-click to WordPress REST API v2 **or** Shopify Admin API — typed, idempotent |
+
+---
+
+## Live SEO Validation Dashboard
+
+<p align="center">
+  <img src="docs/seo-dashboard.jpg" alt="SEO Validation Dashboard — 10-rule engine with 94/100 score" width="100%" />
+</p>
+
+The validator runs **10 independent rules**, each with a weighted contribution to the overall 0–100 score:
+
+| Rule | What it checks |
+|---|---|
+| H1 Length | 30–70 chars ideal; warns 71–100; fails outside range |
+| H1 Keyword | Exact phrase match → pass; partial coverage → warn; absent → fail |
+| Meta Description | 150–160 chars ideal; keyword presence |
+| Keyword Density | 0.8–2.5% target; stuffing detection above 3.5% |
+| Flesch Readability | FRE ≥ 60 pass; 45–59 warn; < 45 fail |
+| Heading Hierarchy | No skipped levels (H2 → H4 is a violation) |
+| Internal Links | ≥ 2 unique root-relative hrefs required |
+| Schema.org Type | Article / BlogPosting / HowTo / FAQPage / NewsArticle |
+| Canonical URL | Must be absolute HTTPS; relative or HTTP → fail |
+| Word Count | Minimum body length for reliable scoring |
 
 ---
 
 ## Architecture
 
-![Pipeline Flow](docs/pipeline-flow.svg)
+<p align="center">
+  <img src="docs/architecture.svg" alt="System Architecture" width="100%" />
+</p>
 
-| Layer | What it does |
-|---|---|
-| **Pipeline** | Research → Outline → Draft → Refine → Internal Links. Pure functions returning a typed `PipelineStageOutcome<T>`. |
-| **SEO Validator** | 10 independent rules (H1 length, meta description, keyword density, Flesch readability, heading hierarchy, internal links, schema.org type, canonical URL). Weighted 0–100 score. |
-| **CMS Adapters** | `draftToCanonical()` → `canonicalToWordPress()` / `canonicalToShopify()`. All three typed against real API contracts. |
-| **API Routes** | Next.js server actions + two REST endpoints (`/api/cms/publish`, `/api/cms/test-connection`). Auth via Supabase session (not request body). |
-| **Database** | Supabase PostgreSQL. RLS on every table. CMS credentials stored with envelope encryption (AES-256-GCM) — no plaintext column. |
+<p align="center">
+  <img src="docs/pipeline-flow.svg" alt="Pipeline Flow" width="90%" />
+</p>
 
----
-
-## What's in this repo
-
-- ✅ **TypeScript strict throughout** — `noUncheckedIndexedAccess`, `noImplicitOverride`
-- ✅ **Typed pipeline** — `PipelineStageOutcome<T>` result type propagates through all 5 stages
-- ✅ **WordPress REST v2 adapter** — exact payload shapes, Yoast SEO meta fields, App Password auth, `draft`/`publish`/`future` lifecycle
-- ✅ **Shopify Admin API v2025-01 adapter** — `article.handle` (not `slug`), CSV tags (Shopify rejects arrays), SEO metafields in `seo.*` namespace
-- ✅ **10-rule SEO validator** — H1, meta description, heading hierarchy, keyword density (ReDoS-safe), Flesch Reading Ease, internal links, schema.org type guard, canonical URL
-- ✅ **Supabase schema** — 9 tables, workspace RLS, envelope-encrypted CMS credentials, idempotency-keyed publish jobs
-- ✅ **Security headers** — CSP, HSTS, X-Frame-Options, X-Content-Type-Options in `next.config.ts`
-- ✅ **115 tests** — Vitest, typed fixtures, CMS adapter round-trips, SEO validator edge cases
-- ✅ **Architecture diagrams** — Mermaid (pipeline flow, sequence, ER, system architecture)
-- ✅ **UI mockups** — keyword input, article preview with SEO panel, publish dashboard
-
-## What's **not** in this repo
-
-- ❌ Live AI prompts or prompt templates
-- ❌ Proprietary SEO scoring weights or rubric details
-- ❌ Brand voice scoring logic
-- ❌ Internal link graph algorithm
-- ❌ Any customer or agency data
-
-These belong to the operator methodology and live outside the open-source surface. The skeleton compiles and all types check — but producing a publishable article requires the operator layer on top.
+| Layer | Stack | Key decision |
+|---|---|---|
+| **Framework** | Next.js 16 App Router + React 19 | Server Components for pipeline calls; client components for interactive UI |
+| **Pipeline** | Pure TypeScript functions | Every stage returns `PipelineStageOutcome<T>` — typed success/error with duration |
+| **SEO Engine** | Custom validator, `src/lib/seo/` | 10 rules, each independent + unit-tested; weighted scoring via `constants.ts` |
+| **CMS Adapters** | `draftToCanonical()` → WP / Shopify | Canonical intermediary prevents coupling; both adapters typed against real API contracts |
+| **Database** | Supabase PostgreSQL + RLS | AES-256-GCM envelope encryption on CMS credentials; idempotency keys on publish jobs |
+| **Security** | `next.config.ts` headers + `server-only` | CSP, HSTS, X-Frame-Options; credentials never bundled to client |
+| **Tests** | Vitest 4 | 121 tests · CMS adapter round-trips · SEO rule edge cases · `npm audit` 0 CVEs |
 
 ---
 
 ## Database Schema
 
-![Schema](docs/schema.svg)
+<p align="center">
+  <img src="docs/schema.svg" alt="Database Schema" width="100%" />
+</p>
+
+9 tables · Row-Level Security on every table · Workspace-scoped access · Envelope-encrypted CMS credentials
 
 ---
 
-## Quick Start (local type-checking only)
+## CMS Publish Sequence
 
-This project makes **no live API calls** in skeleton mode. You can run the type-checker and tests without any credentials.
+<p align="center">
+  <img src="docs/cms-sequence.svg" alt="CMS Publish Sequence" width="90%" />
+</p>
+
+---
+
+## What this demonstrates (for hiring managers & technical leads)
+
+This project was built to showcase production-level TypeScript discipline across a full AI product surface:
+
+**Type System**
+- `noUncheckedIndexedAccess` + `noImplicitOverride` — strictest tsc profile
+- `PipelineStageOutcome<T>` propagates typed results through all 5 stages
+- `Exclude<SeoVerdict, 'pending'>` narrows the `SEOReport.verdict` union — only valid post-scoring
+- `WordPressPostCreate` / `ShopifyArticleCreate` typed against real API contracts
+
+**Security Engineering**
+- `import 'server-only'` on every credential-touching module — build-time enforcement
+- HTML entity escaping on all AI-generated content before CMS injection (XSS prevention)
+- AES-256-GCM envelope encryption for CMS credentials at rest
+- SHOPIFY_SHOP regex prevents trailing-hyphen subdomains (validation hardening)
+- CSP, HSTS, X-Frame-Options, X-Content-Type-Options headers in `next.config.ts`
+
+**Test Quality (121 tests)**
+- Semantic edge cases: empty keyword guard (`String.includes('')` always `true`)
+- Regex correctness: sentence boundary lookahead vs. `$` inside `[]`
+- Protocol-relative URL classification (`//cdn.example.com` is external, not internal)
+- CMS adapter round-trip: `Draft → Canonical → WP + Shopify` — both outputs preserve meta description
+- Fixture structural checks: JSON fixtures cast to TypeScript types at compile time
+
+**Clean Architecture**
+- Canonical intermediary pattern: `draftToCanonical()` decouples pipeline from CMS-specific shapes
+- Single-branch conditional spreads in `canonicalToWordPress()` — no duplicate optional-field logic
+- `WEIGHTS` integrity enforced unconditionally at module load (not only in dev)
+
+---
+
+## Quick Start
+
+No credentials needed. Everything runs in skeleton/stub mode.
 
 ```bash
 git clone https://github.com/RexOwenDev/seobot.git
 cd seobot
 npm install
-cp .env.example .env          # all values are operator-supplied placeholders
-npm run type-check            # tsc --noEmit — should be clean
-npm test                      # 115 tests, ~2s
+npm run type-check   # tsc --noEmit — clean
+npm test             # 121 tests, ~1s on Vitest 4
+npm audit            # 0 vulnerabilities
 ```
 
-For full setup including asset generation scripts, see [SETUP.md](SETUP.md).
+---
+
+## Stack
+
+| | |
+|---|---|
+| Framework | Next.js 16 App Router + React 19 |
+| Language | TypeScript 5.9 strict |
+| Styling | Tailwind v4 + shadcn/ui (zinc, new-york) |
+| Database | Supabase PostgreSQL (RLS + envelope encryption) |
+| AI Gateway | Vercel AI SDK → Claude Sonnet 4.6 (stubbed) |
+| CMS | WordPress REST API v2 · Shopify Admin API 2025-01 |
+| Tests | Vitest 4.1 · 121 passing · 0 CVEs |
+| Deployment | Vercel Fluid Compute (Node.js 24) |
 
 ---
 
@@ -97,7 +173,7 @@ For full setup including asset generation scripts, see [SETUP.md](SETUP.md).
 
 | | Starter | **Agency** | Enterprise |
 |---|---|---|---|
-| Keywords tracked | 25 | **Unlimited** | Unlimited |
+| Keywords / month | 25 | **Unlimited** | Unlimited |
 | Articles / month | 50 | **500** | Unlimited |
 | CMS connections | 1 | **10** | Unlimited |
 | SEO validator | ✓ | **✓** | ✓ |
@@ -107,41 +183,20 @@ For full setup including asset generation scripts, see [SETUP.md](SETUP.md).
 | SLA | — | — | 99.9% |
 | **Price** | $49/mo | **$199/mo** | Custom |
 
-> Pricing is indicative. This repo demonstrates the architecture — contact for operator methodology and deployment.
-
----
-
-## Stack
-
-| | |
-|---|---|
-| Framework | Next.js 16 App Router + React 19 |
-| Language | TypeScript 5.7 strict (`noUncheckedIndexedAccess`) |
-| Styling | Tailwind v4 + shadcn/ui (new-york theme, zinc) |
-| Database | Supabase PostgreSQL (RLS + envelope-encrypted secrets) |
-| AI | Vercel AI Gateway → Claude Sonnet 4.6 (stubbed) |
-| CMS | WordPress REST API v2 · Shopify Admin API 2025-01 |
-| Deployment | Vercel Fluid Compute (Node.js 24) |
-| Tests | Vitest |
+> Pricing is indicative. This repo demonstrates the architecture — the operator methodology (prompts, scoring weights, brand voice engine) is the proprietary layer.
 
 ---
 
 ## FAQ
 
-**Why is everything stubbed?**
-The value of this project is the architecture and type discipline, not the prompts. Prompts are the operator methodology — they're what you pay for. The skeleton shows exactly what contracts to fulfill.
+**Why is the AI stubbed?**
+The prompts and scoring weights are the operator methodology — the proprietary, monetizable layer. The skeleton shows every contract that layer must fulfill: exact TypeScript types, stage interfaces, validation thresholds. You can see exactly what to build.
 
-**Can I run this in production?**
-Not from this repo alone. You need to wire up the AI Gateway, supply prompt templates, configure CMS credentials, and add authentication middleware. See [SETUP.md](SETUP.md).
+**Why 121 tests on a skeleton?**
+Because the test suite documents every non-obvious edge case in the system's correctness guarantees. Each test corresponds to a real bug pattern: `String.includes('')` always returns `true`, `$` inside `[]` is a literal character, protocol-relative URLs resolve externally. These are the kinds of bugs that ship silently without tests.
 
-**Does the SEO validator use real scoring?**
-The 10 rules are all industry-standard (Flesch Reading Ease, Google's meta description length guidance, schema.org vocabulary). The scoring weights used to compute the 0–100 score are operator configuration — not shipped in this repo.
-
-**Which WordPress version is supported?**
-WordPress 5.0+ (REST API v2). Tested shapes against WP 6.x. Auth uses Application Passwords (WP 5.6+).
-
-**Which Shopify plan is required?**
-Any plan with the Admin API (Shopify Basic and above). Uses `2025-01` API version. Requires `write_content` scope on the access token.
+**Is this production-ready?**
+The architecture is production-grade. Wiring it up requires: AI Gateway credentials (Vercel/Anthropic), prompt templates, CMS Application Passwords, Supabase project config, and deployment to Vercel. See [SETUP.md](SETUP.md).
 
 ---
 
@@ -151,4 +206,6 @@ MIT — see [LICENSE](LICENSE).
 
 ---
 
-*Built by [RexOwenDev](https://github.com/RexOwenDev) · Portfolio showcase — not a SaaS product*
+<p align="center">
+  Built by <a href="https://github.com/RexOwenDev"><strong>RexOwenDev</strong></a> · Portfolio showcase · AI × TypeScript × CMS automation
+</p>
