@@ -17,7 +17,7 @@
     "generate:all": "npm run generate:hero && npm run generate:diagrams && npm run generate:mockups"
   },
   "dependencies": {
-    "@supabase/ssr": "^0.10.2",
+    "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.104.0",
     "ai": "^6.0.0",
     "class-variance-authority": "^0.7.1",
