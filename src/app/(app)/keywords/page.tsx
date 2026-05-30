@@ -7,7 +7,7 @@ export default function KeywordsPage() {
     <div className="mx-auto max-w-4xl">
       <div className="mb-6">
         <h1 className="mb-1 text-2xl font-semibold tracking-tight">Keywords</h1>
-        <p className="text-sm text-zinc-400">
+        <p className="text-sm text-stone-500">
           Add a keyword phrase to run the full research → draft → refine pipeline.
         </p>
       </div>

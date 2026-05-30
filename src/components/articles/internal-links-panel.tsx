@@ -26,9 +26,9 @@ export function InternalLinksPanel({ links }: InternalLinksPanelProps) {
 
   if (links.length === 0) {
     return (
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-        <h2 className="mb-3 text-sm font-medium text-zinc-300">Internal links</h2>
-        <p className="text-xs text-zinc-500">
+      <div className="rounded-xl border border-stone-200 bg-surface p-5">
+        <h2 className="mb-3 text-sm font-medium text-stone-700">Internal links</h2>
+        <p className="text-xs text-stone-500">
           No link suggestions — run the pipeline to generate them.
         </p>
       </div>
@@ -36,21 +36,21 @@ export function InternalLinksPanel({ links }: InternalLinksPanelProps) {
   }
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-      <h2 className="mb-4 text-sm font-medium text-zinc-300">Internal link suggestions</h2>
+    <div className="rounded-xl border border-stone-200 bg-surface p-5">
+      <h2 className="mb-4 text-sm font-medium text-stone-700">Internal link suggestions</h2>
       <ul className="space-y-3">
         {links.map(link => {
           const decision = decisions[link.id];
           return (
-            <li key={link.id} className="rounded-lg border border-zinc-800 bg-zinc-950 p-3">
+            <li key={link.id} className="rounded-lg border border-stone-200 bg-surface-nested p-3">
               <div className="mb-1 flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="text-xs font-medium text-zinc-200">
+                  <p className="text-xs font-medium text-stone-800">
                     &ldquo;{link.anchorText}&rdquo;
                   </p>
-                  <p className="mt-0.5 truncate text-xs text-zinc-500">{link.targetH1}</p>
+                  <p className="mt-0.5 truncate text-xs text-stone-500">{link.targetH1}</p>
                 </div>
-                <span className="shrink-0 text-xs text-zinc-600 tabular-nums">
+                <span className="shrink-0 text-xs text-stone-400 tabular-nums">
                   {Math.round(link.relevanceScore * 100)}%
                 </span>
               </div>
@@ -61,8 +61,8 @@ export function InternalLinksPanel({ links }: InternalLinksPanelProps) {
                   className={[
                     'rounded border px-2.5 py-1 text-xs transition-colors',
                     decision === true
-                      ? 'border-emerald-400/40 bg-emerald-400/10 text-emerald-400'
-                      : 'border-zinc-700 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300',
+                      ? 'border-emerald-400/40 bg-emerald-400/10 text-emerald-600'
+                      : 'border-stone-300 text-stone-500 hover:border-stone-400 hover:text-stone-700',
                   ].join(' ')}
                 >
                   Accept
@@ -73,8 +73,8 @@ export function InternalLinksPanel({ links }: InternalLinksPanelProps) {
                   className={[
                     'rounded border px-2.5 py-1 text-xs transition-colors',
                     decision === false
-                      ? 'border-red-400/40 bg-red-400/10 text-red-400'
-                      : 'border-zinc-700 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300',
+                      ? 'border-red-400/40 bg-red-400/10 text-red-600'
+                      : 'border-stone-300 text-stone-500 hover:border-stone-400 hover:text-stone-700',
                   ].join(' ')}
                 >
                   Reject

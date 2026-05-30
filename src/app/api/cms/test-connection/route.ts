@@ -27,7 +27,7 @@ function buildFixtureResponse(cmsConnectionId: string): TestConnectionResponse {
     cmsConnectionId,
     provider: 'wordpress',
     status: 'verified',
-    siteUrl: 'https://demo.forgetorque.com',
+    siteUrl: 'https://weddedwonderland.com',
     checkedAt: new Date().toISOString(),
   };
 }

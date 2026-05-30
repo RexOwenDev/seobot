@@ -45,3 +45,5 @@ tsconfig.tsbuildinfo
 docs/hero.png
 docs/diagrams/*.svg
 docs/mockups/*.png
+
+.vercel

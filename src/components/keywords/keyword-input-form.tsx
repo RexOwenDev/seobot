@@ -32,34 +32,34 @@ export function KeywordInputForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-xl border border-zinc-800 bg-zinc-900 p-5"
+      className="rounded-xl border border-stone-200 bg-surface p-5"
     >
-      <h2 className="mb-4 text-sm font-medium text-zinc-300">Add keyword</h2>
+      <h2 className="mb-4 text-sm font-medium text-stone-700">Add keyword</h2>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
-          <label htmlFor="kw-phrase" className="mb-1.5 block text-xs text-zinc-400">
+          <label htmlFor="kw-phrase" className="mb-1.5 block text-xs text-stone-500">
             Keyword phrase <span className="text-red-400">*</span>
           </label>
           <input
             id="kw-phrase"
             type="text"
             required
-            placeholder="e.g. best industrial torque wrenches"
+            placeholder="e.g. destination weddings Santorini"
             value={form.phrase}
             onChange={e => setForm(f => ({ ...f, phrase: e.target.value }))}
-            className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
+            className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 placeholder:text-stone-300 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
           />
         </div>
 
         <div>
-          <label htmlFor="kw-length" className="mb-1.5 block text-xs text-zinc-400">
+          <label htmlFor="kw-length" className="mb-1.5 block text-xs text-stone-500">
             Target word count
           </label>
           <select
             id="kw-length"
             value={form.targetLength}
             onChange={e => setForm(f => ({ ...f, targetLength: Number(e.target.value) }))}
-            className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-200 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
+            className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
           >
             <option value={1000}>~1,000 words</option>
             <option value={1500}>~1,500 words</option>
@@ -70,14 +70,14 @@ export function KeywordInputForm() {
         </div>
 
         <div>
-          <label htmlFor="kw-intent" className="mb-1.5 block text-xs text-zinc-400">
+          <label htmlFor="kw-intent" className="mb-1.5 block text-xs text-stone-500">
             Search intent
           </label>
           <select
             id="kw-intent"
             value={form.intent}
             onChange={e => setForm(f => ({ ...f, intent: e.target.value as Intent | '' }))}
-            className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-200 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
+            className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
           >
             <option value="">Auto-detect</option>
             <option value="informational">Informational</option>
@@ -92,13 +92,13 @@ export function KeywordInputForm() {
         <button
           type="submit"
           disabled={submitted}
-          className="rounded-md bg-zinc-100 px-4 py-2 text-sm font-medium text-zinc-900 transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded-md bg-stone-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {submitted ? 'Queued ✓' : 'Run pipeline →'}
         </button>
         {submitted && (
-          <span className="text-xs text-emerald-400">
-            Keyword queued — pipeline stub will return fixture data
+          <span className="text-xs text-emerald-600">
+            Keyword queued — research pipeline will begin shortly
           </span>
         )}
       </div>

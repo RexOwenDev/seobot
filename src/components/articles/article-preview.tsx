@@ -6,14 +6,14 @@ interface ArticlePreviewProps {
 
 export function ArticlePreview({ article }: ArticlePreviewProps) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
-      <div className="mb-6 border-b border-zinc-800 pb-4">
-        <p className="mb-1 text-xs text-zinc-500">H1 — Primary heading</p>
+    <div className="rounded-xl border border-stone-200 bg-surface p-6">
+      <div className="mb-6 border-b border-stone-200 pb-4">
+        <p className="mb-1 text-xs text-stone-500">H1 — Primary heading</p>
         <h1 className="text-xl font-semibold leading-snug">{article.h1}</h1>
-        <p className="mt-2 text-sm leading-relaxed text-zinc-400">{article.metaDescription}</p>
+        <p className="mt-2 text-sm leading-relaxed text-stone-500">{article.metaDescription}</p>
       </div>
 
-      <div className="mb-4 flex flex-wrap gap-4 text-xs text-zinc-500">
+      <div className="mb-4 flex flex-wrap gap-4 text-xs text-stone-500">
         <span>{article.wordCount.toLocaleString()} words</span>
         <span>{article.sections.length} sections</span>
         <span>SEO score {article.seoScore}/100</span>
@@ -49,17 +49,17 @@ function SectionCard({
   return (
     <div
       className={[
-        'rounded-lg border bg-zinc-950 p-3',
-        isH2 ? 'border-zinc-700' : 'ml-4 border-zinc-800',
+        'rounded-lg border bg-surface-nested p-3',
+        isH2 ? 'border-stone-200' : 'ml-4 border-stone-200',
       ].join(' ')}
     >
       <div className="mb-1 flex items-center gap-2">
-        <span className="font-mono text-xs text-zinc-600">H{section.level}</span>
-        <span className={isH2 ? 'text-sm font-medium text-zinc-200' : 'text-sm text-zinc-300'}>
+        <span className="font-mono text-xs text-stone-400">H{section.level}</span>
+        <span className={isH2 ? 'text-sm font-medium text-stone-800' : 'text-sm text-stone-700'}>
           {section.text}
         </span>
       </div>
-      <p className="text-xs text-zinc-600">{section.wordCount} words</p>
+      <p className="text-xs text-stone-400">{section.wordCount} words</p>
     </div>
   );
 }

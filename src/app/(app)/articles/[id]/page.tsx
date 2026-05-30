@@ -22,17 +22,17 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   return (
     <div className="mx-auto max-w-5xl">
       {/* Breadcrumb */}
-      <nav className="mb-4 text-xs text-zinc-500">
-        <Link href="/keywords" className="hover:text-zinc-300">
+      <nav className="mb-4 text-xs text-stone-400">
+        <Link href="/keywords" className="hover:text-stone-700">
           Keywords
         </Link>
         <span className="mx-2">›</span>
-        <span className="text-zinc-400 line-clamp-1">{article.h1}</span>
+        <span className="text-stone-500 line-clamp-1">{article.h1}</span>
       </nav>
 
       {/* Publish status banner */}
       {article.publishedAt && (
-        <div className="mb-4 flex items-center gap-2 rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-4 py-2.5 text-xs text-emerald-400">
+        <div className="mb-4 flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs text-emerald-600">
           <span>✓</span>
           <span>
             Published on{' '}

@@ -59,25 +59,25 @@ export function PricingTiers() {
           className={[
             'flex flex-col rounded-xl border p-6',
             tier.highlighted
-              ? 'border-zinc-500 bg-zinc-800 ring-1 ring-zinc-600'
-              : 'border-zinc-800 bg-zinc-900',
+              ? 'border-accent bg-surface ring-1 ring-accent/20'
+              : 'border-stone-200 bg-surface',
           ].join(' ')}
         >
           {tier.highlighted && (
-            <span className="mb-3 self-start rounded-full bg-zinc-700 px-2.5 py-0.5 text-xs font-medium text-zinc-200">
+            <span className="mb-3 self-start rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-white">
               Most popular
             </span>
           )}
           <h3 className="mb-1 text-lg font-semibold">{tier.name}</h3>
           <div className="mb-2 flex items-baseline gap-0.5">
             <span className="text-3xl font-bold">{tier.price}</span>
-            {tier.period && <span className="text-sm text-zinc-400">{tier.period}</span>}
+            {tier.period && <span className="text-sm text-stone-500">{tier.period}</span>}
           </div>
-          <p className="mb-5 text-sm text-zinc-400">{tier.description}</p>
+          <p className="mb-5 text-sm text-stone-500">{tier.description}</p>
           <ul className="mb-6 flex-1 space-y-2">
             {tier.features.map(feature => (
-              <li key={feature} className="flex items-start gap-2 text-sm text-zinc-300">
-                <span className="mt-0.5 text-emerald-400" aria-hidden>
+              <li key={feature} className="flex items-start gap-2 text-sm text-stone-700">
+                <span className="mt-0.5 text-emerald-600" aria-hidden>
                   ✓
                 </span>
                 {feature}
@@ -89,8 +89,8 @@ export function PricingTiers() {
             className={[
               'w-full rounded-md py-2 text-sm font-medium transition-colors',
               tier.highlighted
-                ? 'bg-zinc-100 text-zinc-900 hover:bg-white'
-                : 'border border-zinc-700 text-zinc-300 hover:border-zinc-600 hover:text-zinc-200',
+                ? 'bg-stone-900 text-white hover:bg-stone-800'
+                : 'border border-stone-300 text-stone-600 hover:border-stone-400 hover:text-stone-800',
             ].join(' ')}
           >
             {tier.cta}
