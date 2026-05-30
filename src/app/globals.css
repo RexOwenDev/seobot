@@ -10,6 +10,9 @@
   --color-primary: #1C1411;
   --color-primary-foreground: #FAF7F4;
   --color-accent: #C4A35A;
+  --color-surface: #FFFFFF;
+  --color-surface-nested: #F7F3EF;
+  --color-sidebar: #F0EAE4;
 }
 
 * {
