@@ -10,11 +10,11 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  queued: 'text-zinc-500 bg-zinc-800 border-zinc-700',
-  researched: 'text-blue-400 bg-blue-400/10 border-blue-400/20',
-  outlined: 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20',
-  drafted: 'text-purple-400 bg-purple-400/10 border-purple-400/20',
-  published: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20',
+  queued: 'text-stone-500 bg-stone-100 border-stone-200',
+  researched: 'text-blue-600 bg-blue-50 border-blue-200',
+  outlined: 'text-amber-600 bg-amber-50 border-amber-200',
+  drafted: 'text-purple-600 bg-purple-50 border-purple-200',
+  published: 'text-emerald-600 bg-emerald-50 border-emerald-200',
 };
 
 export default function DashboardPage() {
@@ -25,7 +25,7 @@ export default function DashboardPage() {
     <div className="mx-auto max-w-4xl">
       <div className="mb-6">
         <h1 className="mb-1 text-2xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-zinc-400">ForgeTorque workspace · demo mode</p>
+        <p className="text-sm text-stone-500">Wedded Wonderland · demo mode</p>
       </div>
 
       {/* ── Stats cards ────────────────────────────────────────────────── */}
@@ -38,10 +38,10 @@ export default function DashboardPage() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* ── Recent keywords ──────────────────────────────────────────── */}
-        <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+        <section className="rounded-xl border border-stone-200 bg-surface p-5">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-medium text-zinc-300">Recent keywords</h2>
-            <Link href="/keywords" className="text-xs text-zinc-500 hover:text-zinc-300">
+            <h2 className="text-sm font-medium text-stone-700">Recent keywords</h2>
+            <Link href="/keywords" className="text-xs text-stone-500 hover:text-stone-700">
               View all →
             </Link>
           </div>
@@ -49,8 +49,8 @@ export default function DashboardPage() {
             {recentKeywords.map(kw => (
               <li key={kw.id} className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="truncate text-sm text-zinc-200">{kw.phrase}</p>
-                  <p className="mt-0.5 text-xs text-zinc-500">
+                  <p className="truncate text-sm text-stone-800">{kw.phrase}</p>
+                  <p className="mt-0.5 text-xs text-stone-500">
                     {kw.searchVolume.toLocaleString()} vol · {kw.brand}
                   </p>
                 </div>
@@ -69,25 +69,25 @@ export default function DashboardPage() {
 
         {/* ── Top article ──────────────────────────────────────────────── */}
         {recentArticle && (
-          <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+          <section className="rounded-xl border border-stone-200 bg-surface p-5">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-sm font-medium text-zinc-300">Top article</h2>
+              <h2 className="text-sm font-medium text-stone-700">Top article</h2>
               <Link
                 href={`/articles/${recentArticle.id}`}
-                className="text-xs text-zinc-500 hover:text-zinc-300"
+                className="text-xs text-stone-500 hover:text-stone-700"
               >
                 Open →
               </Link>
             </div>
             <Link href={`/articles/${recentArticle.id}`} className="group block">
-              <p className="mb-2 text-sm leading-snug text-zinc-200 group-hover:text-white">
+              <p className="mb-2 text-sm leading-snug text-stone-800 group-hover:text-stone-900">
                 {recentArticle.h1}
               </p>
-              <p className="mb-4 text-xs leading-relaxed text-zinc-500 line-clamp-2">
+              <p className="mb-4 text-xs leading-relaxed text-stone-500 line-clamp-2">
                 {recentArticle.metaDescription}
               </p>
             </Link>
-            <div className="flex items-center gap-4 text-xs text-zinc-500">
+            <div className="flex items-center gap-4 text-xs text-stone-500">
               <span>{recentArticle.wordCount.toLocaleString()} words</span>
               <span>SEO {recentArticle.seoScore}/100</span>
               <span
@@ -110,8 +110,8 @@ export default function DashboardPage() {
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-      <p className="mb-1 text-xs text-zinc-500">{label}</p>
+    <div className="rounded-xl border border-stone-200 bg-surface p-5">
+      <p className="mb-1 text-xs text-stone-500">{label}</p>
       <p className="text-2xl font-semibold tabular-nums">{value}</p>
     </div>
   );
