@@ -33,7 +33,7 @@ export function PublishJobTable({ jobs }: PublishJobTableProps) {
 
   return (
     <div className="overflow-hidden rounded-xl border border-stone-200">
-      <table className="w-full text-sm" aria-label="Publish jobs">
+      <table className="w-full table-fixed text-sm" aria-label="Publish jobs">
         <thead>
           <tr className="border-b border-stone-200 bg-stone-50">
             <th className="px-4 py-3 text-left text-xs font-medium text-stone-500">Article</th>
