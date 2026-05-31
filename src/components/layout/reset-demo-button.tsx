@@ -19,6 +19,7 @@ export function ResetDemoButton() {
     setState('resetting');
     resetDemo();
     setTimeout(() => {
+      setState('idle');
       router.push('/dashboard');
       router.refresh();
     }, 400);
