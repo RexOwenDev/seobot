@@ -26,7 +26,7 @@ export default function PublishPage() {
           <button
             type="button"
             onClick={() => setAddModal('open')}
-            className="rounded-md border border-stone-300 px-3 py-2 text-xs text-stone-600 transition-colors hover:border-stone-400"
+            className="rounded-md border border-stone-300 px-3 py-2.5 text-xs text-stone-600 transition-colors hover:border-stone-400"
           >
             + Add connection
           </button>
@@ -57,7 +57,7 @@ export default function PublishPage() {
                 <select
                   value={newConn.type}
                   onChange={e => setNewConn(c => ({ ...c, type: e.target.value }))}
-                  className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                  className="w-full rounded-md border border-stone-300 bg-white px-3 py-2.5 text-sm text-stone-800 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
                 >
                   <option value="wordpress">WordPress</option>
                   <option value="shopify" disabled>Shopify (coming soon)</option>
@@ -70,7 +70,7 @@ export default function PublishPage() {
                   placeholder="https://yoursite.com"
                   value={newConn.url}
                   onChange={e => setNewConn(c => ({ ...c, url: e.target.value }))}
-                  className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 placeholder:text-stone-300 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                  className="w-full rounded-md border border-stone-300 bg-white px-3 py-2.5 text-sm text-stone-800 placeholder:text-stone-300 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
                 />
               </div>
               <div>
@@ -80,7 +80,7 @@ export default function PublishPage() {
                   placeholder="admin"
                   value={newConn.username}
                   onChange={e => setNewConn(c => ({ ...c, username: e.target.value }))}
-                  className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 placeholder:text-stone-300 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                  className="w-full rounded-md border border-stone-300 bg-white px-3 py-2.5 text-sm text-stone-800 placeholder:text-stone-300 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
                 />
               </div>
               <div>
@@ -90,7 +90,7 @@ export default function PublishPage() {
                   placeholder="xxxx xxxx xxxx xxxx"
                   value={newConn.password}
                   onChange={e => setNewConn(c => ({ ...c, password: e.target.value }))}
-                  className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 placeholder:text-stone-300 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                  className="w-full rounded-md border border-stone-300 bg-white px-3 py-2.5 text-sm text-stone-800 placeholder:text-stone-300 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
                 />
               </div>
             </div>

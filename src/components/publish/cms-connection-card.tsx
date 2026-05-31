@@ -75,7 +75,7 @@ export function CmsConnectionCard({ connection, onConfigure }: CmsConnectionCard
           <button
             type="button"
             onClick={onConfigure}
-            className="rounded-md border border-stone-300 px-3 py-2 text-xs text-stone-600 transition-colors hover:border-stone-400 hover:text-stone-800"
+            className="rounded-md border border-stone-300 px-3 py-2.5 text-xs text-stone-600 transition-colors hover:border-stone-400 hover:text-stone-800"
           >
             Configure &rarr;
           </button>
@@ -85,7 +85,7 @@ export function CmsConnectionCard({ connection, onConfigure }: CmsConnectionCard
             disabled={testState !== 'idle'}
             onClick={handleTest}
             className={[
-              'rounded-md border px-3 py-2 text-xs transition-colors disabled:cursor-not-allowed',
+              'rounded-md border px-3 py-2.5 text-xs transition-colors disabled:cursor-not-allowed',
               testState === 'verified'
                 ? 'border-emerald-300 bg-emerald-50 text-emerald-600'
                 : 'border-stone-300 text-stone-600 hover:border-stone-400 hover:text-stone-800',
