@@ -43,7 +43,7 @@ export function ArticleDetailLayout({ article }: ArticleDetailLayoutProps) {
         <div className="mb-4 flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs text-emerald-600">
           <span>✓</span>
           <span>
-            Published to Wedded Wonderland on{' '}
+            Saved as WordPress draft ·{' '}
             {new Date(liveArticle.publishedAt).toLocaleDateString('en-AU', {
               year: 'numeric',
               month: 'long',
@@ -65,7 +65,7 @@ export function ArticleDetailLayout({ article }: ArticleDetailLayoutProps) {
       {!liveArticle.publishedAt && (
         <div className="mb-4 flex items-center gap-3 rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5">
           <span className="text-xs text-stone-500">
-            Draft — not yet published to WordPress
+            Draft — not yet sent to WordPress
           </span>
           <button
             type="button"
@@ -76,7 +76,7 @@ export function ArticleDetailLayout({ article }: ArticleDetailLayoutProps) {
             {publishState === 'publishing' && (
               <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-stone-600 border-t-white" />
             )}
-            {publishState === 'publishing' ? 'Publishing...' : 'Publish to WordPress'}
+            {publishState === 'publishing' ? 'Sending...' : 'Send to WordPress as Draft'}
           </button>
         </div>
       )}

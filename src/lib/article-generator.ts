@@ -34,6 +34,15 @@ function buildH1(phrase: string): string {
   if (/honeymoon/i.test(phrase)) {
     return `${cap(topic)}: Top Honeymoon Destinations for 2026`;
   }
+  if (/proposal/i.test(phrase)) {
+    return `${cap(topic)}: Unforgettable Proposal Ideas for 2026`;
+  }
+  if (/engagement/i.test(phrase)) {
+    return `${cap(topic)}: Destination Engagement Guide for 2026`;
+  }
+  if (/anniversary/i.test(phrase)) {
+    return `${cap(topic)}: Romantic Anniversary Getaway Guide for 2026`;
+  }
   return `${cap(phrase)}: The Complete 2026 Wedding Guide`;
 }
 
@@ -46,7 +55,16 @@ function buildSlug(phrase: string): string {
 
 function buildMeta(phrase: string): string {
   const topic = extractTopic(phrase);
-  const meta = `Plan the perfect ${phrase} with Wedded Wonderland. Expert venue guides, cost breakdowns, legal tips, and vendor recommendations for ${cap(topic)} in 2026.`;
+  const isHoneymoon = /honeymoon/i.test(phrase);
+  const isProposal = /proposal/i.test(phrase);
+  const isEngagement = /engagement/i.test(phrase);
+  const isAnniversary = /anniversary/i.test(phrase);
+  const eventLabel = isHoneymoon ? 'honeymoon'
+    : isProposal ? 'proposal'
+    : isEngagement ? 'engagement'
+    : isAnniversary ? 'anniversary'
+    : 'destination wedding';
+  const meta = `Plan the perfect ${cap(topic)} ${eventLabel} with Wedded Wonderland. Expert venue guides, cost breakdowns, legal tips, and curated supplier recommendations for 2026.`;
   return meta.length <= 160 ? meta : meta.slice(0, 157) + '...';
 }
 
@@ -226,10 +244,20 @@ function bodyBudget(phrase: string, dest: string): readonly string[] {
   ];
 }
 
-function bodyTips(): readonly string[] {
+function bodyTips(phrase: string, dest: string): readonly string[] {
+  const isHoneymoon = /honeymoon/i.test(phrase);
+  const isProposal = /proposal/i.test(phrase);
+  const isEngagement = /engagement/i.test(phrase);
+  const isAnniversary = /anniversary/i.test(phrase);
+  const eventWord = isHoneymoon ? 'Honeymoon'
+    : isProposal ? 'Proposal'
+    : isEngagement ? 'Engagement'
+    : isAnniversary ? 'Anniversary'
+    : 'Wedding';
   return [
     `The Wedded Wonderland planning team has coordinated over 3,000 events across 40 countries. The consistent advice from experienced coordinators: secure the venue contract and work through legal requirements before committing to any other vendor. These two elements carry the longest lead time and are the hardest to adjust once locked in.`,
     `Document management is the area most couples underestimate for international ceremonies. Certificate requirements, translation timelines, and apostille processing typically take 6 to 10 weeks. Starting this process early removes the most common source of pre-event stress and gives genuine flexibility in the final weeks before the date.`,
+    `To start planning your ${dest === 'generic' ? 'destination' : cap(dest)} ${eventWord.toLowerCase()}, contact the Wedded Wonderland team for personalised venue recommendations, exclusive supplier introductions, and end-to-end concierge support tailored to your celebration.`,
   ];
 }
 
@@ -239,7 +267,14 @@ function buildSections(phrase: string, targetLength: number): readonly DemoSecti
   const topic = extractTopic(phrase);
   const dest = getDestinationKey(phrase);
   const isHoneymoon = /honeymoon/i.test(phrase);
-  const eventWord = isHoneymoon ? 'Honeymoon' : 'Wedding';
+  const isProposal = /proposal/i.test(phrase);
+  const isEngagement = /engagement/i.test(phrase);
+  const isAnniversary = /anniversary/i.test(phrase);
+  const eventWord = isHoneymoon ? 'Honeymoon'
+    : isProposal ? 'Proposal'
+    : isEngagement ? 'Engagement'
+    : isAnniversary ? 'Anniversary'
+    : 'Wedding';
 
   const specs: Array<{ level: 2 | 3; text: string; pct: number; body: readonly string[] }> = [
     {
@@ -282,7 +317,7 @@ function buildSections(phrase: string, targetLength: number): readonly DemoSecti
       level: 2,
       text: 'Practical Tips From Wedded Wonderland',
       pct: 0.15,
-      body: bodyTips(),
+      body: bodyTips(phrase, dest),
     },
   ];
 
