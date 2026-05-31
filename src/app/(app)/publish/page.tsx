@@ -33,7 +33,7 @@ export default function PublishPage() {
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           {connections.map(conn => (
-            <CmsConnectionCard key={conn.id} connection={conn} />
+            <CmsConnectionCard key={conn.id} connection={conn} onConfigure={() => setAddModal('open')} />
           ))}
         </div>
       </section>

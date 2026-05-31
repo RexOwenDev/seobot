@@ -170,6 +170,11 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
   const publishArticle = useCallback((id: string, articleH1: string) => {
     setDynamic(prev => {
       const now = new Date().toISOString();
+      const slug = articleH1
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, '')
+        .trim()
+        .replace(/\s+/g, '-');
       const newJob: DemoPublishJob = {
         id: `job-${Date.now()}`,
         articleId: id,
@@ -179,7 +184,7 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
         status: 'succeeded',
         startedAt: now,
         completedAt: now,
-        externalUrl: null,
+        externalUrl: `https://weddedwonderland.com.au/blog/${slug}`,
       };
       const next: StoredState = {
         ...prev,

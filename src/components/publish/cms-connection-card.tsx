@@ -24,9 +24,10 @@ const PROVIDER_ICONS: Record<DemoCmsConnection['provider'], string> = {
 
 interface CmsConnectionCardProps {
   connection: DemoCmsConnection;
+  onConfigure?: () => void;
 }
 
-export function CmsConnectionCard({ connection }: CmsConnectionCardProps) {
+export function CmsConnectionCard({ connection, onConfigure }: CmsConnectionCardProps) {
   const [testState, setTestState] = useState<'idle' | 'testing' | 'verified'>('idle');
 
   async function handleTest() {
@@ -73,6 +74,7 @@ export function CmsConnectionCard({ connection }: CmsConnectionCardProps) {
         {connection.status === 'unconfigured' ? (
           <button
             type="button"
+            onClick={onConfigure}
             className="rounded-md border border-stone-300 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:border-stone-400 hover:text-stone-800"
           >
             Configure &rarr;

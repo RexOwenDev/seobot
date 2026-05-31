@@ -495,13 +495,3 @@ export const DEMO_PUBLISH_JOBS: readonly DemoPublishJob[] = [
   },
 ] as const;
 
-// ── Dashboard stats (derived from above for consistency) ──────────────────────
-
-export const DEMO_STATS = {
-  keywordsTracked: DEMO_KEYWORDS.length,
-  articlesGenerated: DEMO_ARTICLES.length,
-  articlesPublished: DEMO_ARTICLES.filter(a => a.publishedAt !== null).length,
-  avgSeoScore: Math.round(
-    DEMO_ARTICLES.reduce((sum, a) => sum + a.seoScore, 0) / DEMO_ARTICLES.length,
-  ),
-} as const;

@@ -1,5 +1,4 @@
 import { DEMO_ARTICLES } from '@/lib/demo-data';
-import { ArticleDetailLayout } from '@/components/articles/article-detail-layout';
 import { ArticleDetailClient } from '@/components/articles/article-detail-client';
 
 interface ArticlePageProps {
@@ -15,13 +14,8 @@ export function generateStaticParams() {
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { id } = await params;
-  const article = DEMO_ARTICLES.find(a => a.id === id);
-
-  if (article) {
-    return <ArticleDetailLayout article={article} />;
-  }
-
-  // Not a fixture article — could be a dynamically generated one.
-  // Delegate to client component which reads from DemoStateContext/localStorage.
+  // Always delegate to the client component so it reads from DemoStateContext
+  // (which applies publishedOverrides). Avoids server/client hydration mismatch
+  // when fixture articles are published by the user mid-session.
   return <ArticleDetailClient articleId={id} />;
 }
