@@ -9,6 +9,14 @@ const STATUS_COLORS: Record<DemoKeyword['status'], string> = {
   published: 'text-emerald-600 bg-emerald-50 border-emerald-200',
 };
 
+const STATUS_LABELS: Record<DemoKeyword['status'], string> = {
+  queued: 'Queued',
+  researched: 'Researched',
+  outlined: 'Outlined',
+  drafted: 'Draft',
+  published: 'Published',
+};
+
 const INTENT_LABELS: Record<NonNullable<DemoKeyword['intent']>, string> = {
   informational: 'Informational',
   commercial: 'Commercial',
@@ -18,9 +26,10 @@ const INTENT_LABELS: Record<NonNullable<DemoKeyword['intent']>, string> = {
 
 interface KeywordTableProps {
   keywords: readonly DemoKeyword[];
+  onRunKeyword?: (phrase: string) => void;
 }
 
-export function KeywordTable({ keywords }: KeywordTableProps) {
+export function KeywordTable({ keywords, onRunKeyword }: KeywordTableProps) {
   if (keywords.length === 0) {
     return (
       <div className="rounded-xl border border-stone-200 bg-surface py-12 text-center">
@@ -62,7 +71,15 @@ export function KeywordTable({ keywords }: KeywordTableProps) {
                   ) : (
                     <span className="text-stone-800">{kw.phrase}</span>
                   )}
-                  <p className="mt-0.5 text-xs text-stone-400">{kw.brand}</p>
+                  {!kw.articleId && onRunKeyword && (
+                    <button
+                      type="button"
+                      onClick={() => { onRunKeyword(kw.phrase); }}
+                      className="mt-0.5 block text-xs text-stone-400 hover:text-accent transition-colors"
+                    >
+                      Generate →
+                    </button>
+                  )}
                 </div>
               </td>
               <td className="hidden px-4 py-3 text-right tabular-nums text-stone-500 sm:table-cell">
@@ -81,7 +98,7 @@ export function KeywordTable({ keywords }: KeywordTableProps) {
                     STATUS_COLORS[kw.status],
                   ].join(' ')}
                 >
-                  {kw.status.charAt(0).toUpperCase() + kw.status.slice(1)}
+                  {STATUS_LABELS[kw.status]}
                 </span>
               </td>
             </tr>

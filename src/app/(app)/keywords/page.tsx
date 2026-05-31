@@ -1,11 +1,18 @@
 'use client';
 
+import { useState, useCallback } from 'react';
 import { useDemoState } from '@/lib/demo-state';
 import { KeywordInputForm } from '@/components/keywords/keyword-input-form';
 import { KeywordTable } from '@/components/keywords/keyword-table';
 
 export default function KeywordsPage() {
   const { keywords } = useDemoState();
+  const [prefill, setPrefill] = useState('');
+
+  const handleRunKeyword = useCallback((phrase: string) => {
+    setPrefill(phrase);
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 0);
+  }, []);
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -17,10 +24,10 @@ export default function KeywordsPage() {
       </div>
 
       <div className="mb-6">
-        <KeywordInputForm />
+        <KeywordInputForm prefill={prefill} />
       </div>
 
-      <KeywordTable keywords={keywords} />
+      <KeywordTable keywords={keywords} onRunKeyword={handleRunKeyword} />
     </div>
   );
 }

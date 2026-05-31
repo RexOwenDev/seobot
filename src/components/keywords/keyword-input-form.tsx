@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useDemoState } from '@/lib/demo-state';
 import { generateArticleFromKeyword } from '@/lib/article-generator';
@@ -25,7 +25,7 @@ const STAGE_LABEL: Record<PipelineStage, string> = {
 
 const ACTIVE_STAGES = ['researching', 'outlining', 'drafting'] as const;
 
-export function KeywordInputForm() {
+export function KeywordInputForm({ prefill }: { prefill?: string }) {
   const [form, setForm] = useState<KeywordFormState>({
     phrase: '',
     targetLength: 2000,
@@ -36,6 +36,12 @@ export function KeywordInputForm() {
   const [lastArticleId, setLastArticleId] = useState<string | null>(null);
 
   const { addKeyword, updateKeywordStatus, addArticle } = useDemoState();
+
+  useEffect(() => {
+    if (prefill?.trim()) {
+      setForm(f => ({ ...f, phrase: prefill.trim() }));
+    }
+  }, [prefill]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

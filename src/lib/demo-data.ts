@@ -41,7 +41,7 @@ export const DEMO_KEYWORDS: readonly DemoKeyword[] = [
     difficulty: 52,
     intent: 'commercial',
     brand: 'Wedded Wonderland',
-    status: 'outlined',
+    status: 'drafted',
     articleId: 'art-003',
   },
   {
@@ -91,7 +91,7 @@ export const DEMO_KEYWORDS: readonly DemoKeyword[] = [
     difficulty: 35,
     intent: 'transactional',
     brand: 'Wedded Wonderland',
-    status: 'researched',
+    status: 'queued',
     articleId: null,
   },
   {

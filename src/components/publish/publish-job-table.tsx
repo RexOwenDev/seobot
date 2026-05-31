@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { DemoPublishJob } from '@/lib/demo-data';
 
 const STATUS_STYLES: Record<DemoPublishJob['status'], string> = {
@@ -49,7 +50,12 @@ export function PublishJobTable({ jobs }: PublishJobTableProps) {
           {jobs.map(job => (
             <tr key={job.id} className="transition-colors hover:bg-stone-50">
               <td className="px-4 py-3">
-                <p className="line-clamp-1 text-xs text-stone-800">{job.articleH1}</p>
+                <Link
+                  href={`/articles/${job.articleId}`}
+                  className="line-clamp-1 text-xs text-stone-800 hover:text-accent transition-colors"
+                >
+                  {job.articleH1}
+                </Link>
                 {job.externalUrl && (
                   <a
                     href={job.externalUrl}
