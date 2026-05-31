@@ -1,14 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { DEMO_CMS_CONNECTIONS, DEMO_PUBLISH_JOBS, type DemoCmsConnection } from '@/lib/demo-data';
+import { useDemoState } from '@/lib/demo-state';
 import { CmsConnectionCard } from '@/components/publish/cms-connection-card';
 import { PublishJobTable } from '@/components/publish/publish-job-table';
 
 export default function PublishPage() {
+  const { publishJobs, connections, addCmsConnection } = useDemoState();
   const [addModal, setAddModal] = useState<'closed' | 'open' | 'saving' | 'saved'>('closed');
   const [newConn, setNewConn] = useState({ type: 'wordpress', url: '', username: '', password: '' });
-  const [connections, setConnections] = useState<DemoCmsConnection[]>([...DEMO_CMS_CONNECTIONS]);
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -43,7 +43,7 @@ export default function PublishPage() {
         <div className="mb-3">
           <h2 className="text-sm font-medium text-stone-700">Recent publish jobs</h2>
         </div>
-        <PublishJobTable jobs={DEMO_PUBLISH_JOBS} />
+        <PublishJobTable jobs={publishJobs} />
       </section>
 
       {/* Add connection modal */}
@@ -115,15 +115,13 @@ export default function PublishPage() {
                   const hostname = (() => {
                     try { return new URL(newConn.url || 'https://example.com').hostname; } catch { return newConn.url || 'example.com'; }
                   })();
-                  const newConnection: DemoCmsConnection = {
-                    id: `cms-${Date.now()}`,
+                  addCmsConnection({
                     provider: newConn.type as 'wordpress' | 'shopify',
                     label: `${newConn.type === 'wordpress' ? 'WordPress' : 'Shopify'} (${hostname})`,
                     siteUrl: newConn.url || '',
                     status: 'verified',
                     lastChecked: new Date().toISOString(),
-                  };
-                  setConnections(prev => [...prev, newConnection]);
+                  });
                   setTimeout(() => {
                     setAddModal('closed');
                     setNewConn({ type: 'wordpress', url: '', username: '', password: '' });

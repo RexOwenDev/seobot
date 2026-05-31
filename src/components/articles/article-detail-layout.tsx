@@ -23,7 +23,7 @@ export function ArticleDetailLayout({ article }: ArticleDetailLayoutProps) {
     if (publishState !== 'idle') return;
     setPublishState('publishing');
     await new Promise(r => setTimeout(r, 2000));
-    publishArticle(liveArticle.id);
+    publishArticle(liveArticle.id, liveArticle.h1);
     setPublishState('idle');
   }
 
