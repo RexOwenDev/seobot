@@ -161,7 +161,7 @@ export function KeywordInputForm({ prefill }: { prefill?: string }) {
           type="submit"
           disabled={stage !== 'idle'}
           className={[
-            'rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60',
+            'rounded-md px-4 py-2.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60',
             stage === 'complete'
               ? 'bg-emerald-600 text-white'
               : 'bg-stone-900 text-white hover:bg-stone-800',

@@ -82,7 +82,7 @@ export function ArticleDetailLayout({ article }: ArticleDetailLayoutProps) {
       )}
 
       {/* Two-column layout */}
-      <div className="grid gap-5 lg:grid-cols-[1fr_280px]">
+      <div className="grid gap-5 md:grid-cols-[1fr_260px] lg:grid-cols-[1fr_280px]">
         {/* Left: article content */}
         <div className="space-y-5">
           <ArticlePreview article={liveArticle} />

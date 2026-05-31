@@ -36,7 +36,7 @@ export default function HomePage() {
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard"
-              className="rounded-md bg-[--color-foreground] px-3 py-1.5 text-sm font-medium text-[--color-primary-foreground] transition-colors hover:opacity-90"
+              className="rounded-md bg-[--color-foreground] px-3 py-2.5 text-sm font-medium text-[--color-primary-foreground] transition-colors hover:opacity-90"
             >
               Open Engine
             </Link>
@@ -46,7 +46,7 @@ export default function HomePage() {
 
       <main className="flex-1">
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
-        <section className="mx-auto max-w-4xl px-6 pb-16 pt-24 text-center">
+        <section className="mx-auto max-w-4xl px-6 pb-16 pt-16 text-center sm:pt-24">
           <span className="mb-6 inline-block rounded-full border border-[--color-border] bg-[--color-muted] px-3 py-1 text-xs text-[--color-muted-foreground]">
             AI-powered · 2026
           </span>

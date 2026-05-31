@@ -27,10 +27,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       {/* ── Mobile top nav ─────────────────────────────────────────────── */}
       <div className="flex flex-1 flex-col">
         <header className="flex h-14 items-center justify-between border-b border-stone-200 bg-sidebar px-4 md:hidden">
-          <Link href="/" className="text-sm font-semibold tracking-tight">
+          <Link href="/" className="min-w-0 shrink truncate text-sm font-semibold tracking-tight">
             Wedded Wonderland
           </Link>
-          <NavLinks orientation="horizontal" />
+          <div className="shrink-0">
+            <NavLinks orientation="horizontal" />
+          </div>
         </header>
 
         {/* ── Page content ─────────────────────────────────────────────── */}
