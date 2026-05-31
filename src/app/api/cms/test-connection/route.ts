@@ -27,7 +27,7 @@ function buildFixtureResponse(cmsConnectionId: string): TestConnectionResponse {
     cmsConnectionId,
     provider: 'wordpress',
     status: 'verified',
-    siteUrl: 'https://weddedwonderland.com',
+    siteUrl: 'https://wordpress-1598319-6454696.cloudwaysapps.com',
     checkedAt: new Date().toISOString(),
   };
 }

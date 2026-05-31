@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useDemoState } from '@/lib/demo-state';
 import type { DemoInternalLink } from '@/lib/demo-data';
 
 interface InternalLinksPanelProps {
@@ -8,20 +8,10 @@ interface InternalLinksPanelProps {
 }
 
 export function InternalLinksPanel({ links }: InternalLinksPanelProps) {
-  // Local UI state — production would persist to Supabase via /api/internal-links/accept
-  const [decisions, setDecisions] = useState<Record<string, boolean | null>>(() => {
-    const initial: Record<string, boolean | null> = {};
-    for (const link of links) {
-      initial[link.id] = link.accepted;
-    }
-    return initial;
-  });
+  const { linkDecisions, setLinkDecision } = useDemoState();
 
-  function decide(id: string, accepted: boolean) {
-    setDecisions(prev => ({
-      ...prev,
-      [id]: prev[id] === accepted ? null : accepted,
-    }));
+  function decide(id: string, accepted: boolean, current: boolean | null | undefined) {
+    setLinkDecision(id, current === accepted ? null : accepted);
   }
 
   if (links.length === 0) {
@@ -40,7 +30,7 @@ export function InternalLinksPanel({ links }: InternalLinksPanelProps) {
       <h2 className="mb-4 text-sm font-medium text-stone-700">Internal link suggestions</h2>
       <ul className="space-y-3">
         {links.map(link => {
-          const decision = decisions[link.id];
+          const decision = link.id in linkDecisions ? linkDecisions[link.id] : link.accepted;
           return (
             <li key={link.id} className="rounded-lg border border-stone-200 bg-surface-nested p-3">
               <div className="mb-1 flex items-start justify-between gap-2">
@@ -57,7 +47,7 @@ export function InternalLinksPanel({ links }: InternalLinksPanelProps) {
               <div className="mt-2 flex gap-2">
                 <button
                   type="button"
-                  onClick={() => decide(link.id, true)}
+                  onClick={() => decide(link.id, true, decision)}
                   className={[
                     'rounded border px-2.5 py-2 text-xs transition-colors',
                     decision === true
@@ -69,7 +59,7 @@ export function InternalLinksPanel({ links }: InternalLinksPanelProps) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => decide(link.id, false)}
+                  onClick={() => decide(link.id, false, decision)}
                   className={[
                     'rounded border px-2.5 py-2 text-xs transition-colors',
                     decision === false

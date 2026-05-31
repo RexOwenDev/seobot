@@ -40,7 +40,7 @@ export function KeywordTable({ keywords, onRunKeyword }: KeywordTableProps) {
 
   return (
     <div className="overflow-hidden rounded-xl border border-stone-200">
-      <table className="w-full text-sm">
+      <table className="w-full text-sm" aria-label="Keywords">
         <thead>
           <tr className="border-b border-stone-200 bg-stone-50">
             <th className="px-4 py-3 text-left text-xs font-medium text-stone-500">Keyword</th>
@@ -75,7 +75,7 @@ export function KeywordTable({ keywords, onRunKeyword }: KeywordTableProps) {
                     <button
                       type="button"
                       onClick={() => { onRunKeyword(kw.phrase); }}
-                      className="mt-0.5 block text-xs text-stone-400 hover:text-accent transition-colors"
+                      className="mt-1 inline-flex items-center py-1.5 text-xs text-stone-400 hover:text-accent transition-colors"
                     >
                       Generate →
                     </button>

@@ -127,8 +127,11 @@ export default function PublishPage() {
                     setNewConn({ type: 'wordpress', url: '', username: '', password: '' });
                   }, 1500);
                 }}
-                className="rounded-md bg-stone-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex items-center gap-1.5 rounded-md bg-stone-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60"
               >
+                {addModal === 'saving' && (
+                  <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-stone-400 border-t-white" aria-hidden="true" />
+                )}
                 {addModal === 'saving'
                   ? 'Connecting...'
                   : addModal === 'saved'

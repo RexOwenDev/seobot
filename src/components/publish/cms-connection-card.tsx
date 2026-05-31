@@ -92,7 +92,7 @@ export function CmsConnectionCard({ connection, onConfigure }: CmsConnectionCard
             ].join(' ')}
           >
             {testState === 'testing' && (
-              <span className="mr-1.5 inline-block h-3 w-3 animate-spin rounded-full border-2 border-stone-300 border-t-stone-600" />
+              <span className="mr-1.5 inline-block h-3 w-3 animate-spin rounded-full border-2 border-stone-300 border-t-stone-600" aria-hidden="true" />
             )}
             {testState === 'idle' && 'Test connection'}
             {testState === 'testing' && 'Testing...'}

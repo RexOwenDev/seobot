@@ -8,8 +8,8 @@ import { publishArticle } from '@/lib/cms/publish';
 // and rate-limiting before the `publishArticle` call.
 
 const PublishRequestSchema = z.object({
-  articleId: z.string().uuid({ message: 'articleId must be a valid UUID' }),
-  cmsConnectionId: z.string().uuid({ message: 'cmsConnectionId must be a valid UUID' }),
+  articleId: z.string().min(1),
+  cmsConnectionId: z.string().min(1),
 });
 
 /**

@@ -29,15 +29,16 @@ interface StoredState {
   keywordStatusOverrides: Record<string, DemoKeyword['status']>; // keywordId → status (for fixture keywords)
   publishJobs: DemoPublishJob[];
   connections: DemoCmsConnection[];
+  linkDecisions: Record<string, boolean | null>;
 }
 
 const STORAGE_KEY = 'seobot-demo-v1';
 
 function readStorage(): StoredState {
-  if (typeof window === 'undefined') return { keywords: [], articles: [], publishedOverrides: {}, keywordStatusOverrides: {}, publishJobs: [], connections: [] };
+  if (typeof window === 'undefined') return { keywords: [], articles: [], publishedOverrides: {}, keywordStatusOverrides: {}, publishJobs: [], connections: [], linkDecisions: {} };
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { keywords: [], articles: [], publishedOverrides: {}, keywordStatusOverrides: {}, publishJobs: [], connections: [] };
+    if (!raw) return { keywords: [], articles: [], publishedOverrides: {}, keywordStatusOverrides: {}, publishJobs: [], connections: [], linkDecisions: {} };
     const parsed = JSON.parse(raw) as Partial<StoredState>;
     return {
       keywords: parsed.keywords ?? [],
@@ -46,9 +47,10 @@ function readStorage(): StoredState {
       keywordStatusOverrides: parsed.keywordStatusOverrides ?? {},
       publishJobs: parsed.publishJobs ?? [],
       connections: parsed.connections ?? [],
+      linkDecisions: parsed.linkDecisions ?? {},
     };
   } catch {
-    return { keywords: [], articles: [], publishedOverrides: {}, keywordStatusOverrides: {}, publishJobs: [], connections: [] };
+    return { keywords: [], articles: [], publishedOverrides: {}, keywordStatusOverrides: {}, publishJobs: [], connections: [], linkDecisions: {} };
   }
 }
 
@@ -95,6 +97,10 @@ interface DemoStateValue {
   addCmsConnection: (data: Omit<DemoCmsConnection, 'id'>) => void;
   /** Clear all user-generated data and reset to fixture state. */
   resetDemo: () => void;
+  /** Link decision state persisted across navigation */
+  linkDecisions: Record<string, boolean | null>;
+  /** Update a link's accept/reject decision */
+  setLinkDecision: (linkId: string, decision: boolean | null) => void;
 }
 
 const DemoStateContext = createContext<DemoStateValue | null>(null);
@@ -102,7 +108,7 @@ const DemoStateContext = createContext<DemoStateValue | null>(null);
 // ── Provider ──────────────────────────────────────────────────────────────────
 
 export function DemoStateProvider({ children }: { children: ReactNode }) {
-  const [dynamic, setDynamic] = useState<StoredState>({ keywords: [], articles: [], publishedOverrides: {}, keywordStatusOverrides: {}, publishJobs: [], connections: [] });
+  const [dynamic, setDynamic] = useState<StoredState>({ keywords: [], articles: [], publishedOverrides: {}, keywordStatusOverrides: {}, publishJobs: [], connections: [], linkDecisions: {} });
 
   // Load from localStorage after mount (avoids SSR hydration mismatch)
   useEffect(() => {
@@ -218,14 +224,25 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const resetDemo = useCallback(() => {
-    const empty: StoredState = { keywords: [], articles: [], publishedOverrides: {}, keywordStatusOverrides: {}, publishJobs: [], connections: [] };
+    const empty: StoredState = { keywords: [], articles: [], publishedOverrides: {}, keywordStatusOverrides: {}, publishJobs: [], connections: [], linkDecisions: {} };
     writeStorage(empty);
     setDynamic(empty);
   }, []);
 
+  const setLinkDecision = useCallback((linkId: string, decision: boolean | null) => {
+    setDynamic(prev => {
+      const next = {
+        ...prev,
+        linkDecisions: { ...prev.linkDecisions, [linkId]: decision },
+      };
+      writeStorage(next);
+      return next;
+    });
+  }, []);
+
   return (
     <DemoStateContext.Provider
-      value={{ keywords, articles, publishJobs, connections, stats, addKeyword, updateKeywordStatus, addArticle, publishArticle, addCmsConnection, resetDemo }}
+      value={{ keywords, articles, publishJobs, connections, stats, addKeyword, updateKeywordStatus, addArticle, publishArticle, addCmsConnection, resetDemo, linkDecisions: dynamic.linkDecisions, setLinkDecision }}
     >
       {children}
     </DemoStateContext.Provider>
