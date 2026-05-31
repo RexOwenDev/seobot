@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useDemoState } from '@/lib/demo-state';
+import { generateArticleFromKeyword } from '@/lib/article-generator';
+import type { DemoKeyword } from '@/lib/demo-data';
 
 type Intent = 'informational' | 'commercial' | 'transactional' | 'navigational';
 type PipelineStage = 'idle' | 'researching' | 'outlining' | 'drafting' | 'complete';
@@ -30,18 +33,49 @@ export function KeywordInputForm() {
   const [stage, setStage] = useState<PipelineStage>('idle');
   const [submittedPhrase, setSubmittedPhrase] = useState('');
 
+  const { addKeyword, updateKeywordStatus, addArticle } = useDemoState();
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.phrase.trim() || stage !== 'idle') return;
 
-    setSubmittedPhrase(form.phrase);
+    const phrase = form.phrase.trim();
+    setSubmittedPhrase(phrase);
 
+    // Realistic-feeling estimated metrics for the new keyword
+    const searchVolume = Math.floor(Math.random() * 2500) + 800;
+    const difficulty = Math.floor(Math.random() * 35) + 22;
+
+    // Add to keyword table immediately as 'queued'
+    const kwId = addKeyword({
+      phrase,
+      searchVolume,
+      difficulty,
+      intent: (form.intent || 'informational') as DemoKeyword['intent'],
+      brand: 'Wedded Wonderland',
+      status: 'queued',
+    });
+
+    // Stage 1: Researching
     setStage('researching');
+    updateKeywordStatus(kwId, 'researched');
     await new Promise(r => setTimeout(r, 1200));
+
+    // Stage 2: Outlining
     setStage('outlining');
+    updateKeywordStatus(kwId, 'outlined');
     await new Promise(r => setTimeout(r, 1100));
+
+    // Stage 3: Drafting
     setStage('drafting');
     await new Promise(r => setTimeout(r, 1300));
+
+    // Generate article and link it to the keyword
+    const articleId = `art-gen-${Date.now()}`;
+    const article = generateArticleFromKeyword(phrase, form.targetLength, articleId, kwId);
+    addArticle(article);
+    updateKeywordStatus(kwId, 'drafted', articleId);
+
     setStage('complete');
 
     setTimeout(() => {
@@ -127,6 +161,7 @@ export function KeywordInputForm() {
         </button>
       </div>
 
+      {/* 3-bar progress indicator during pipeline */}
       {isRunning && (
         <div className="mt-3 flex items-center gap-2">
           {ACTIVE_STAGES.map((s, i) => (
@@ -145,13 +180,14 @@ export function KeywordInputForm() {
         </div>
       )}
 
+      {/* Success panel */}
       {stage === 'complete' && (
         <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 p-4">
           <p className="text-sm font-medium text-emerald-800">Article added to your queue</p>
           <p className="mt-1 text-xs text-emerald-700">
             The draft for{' '}
-            <span className="font-medium">&ldquo;{submittedPhrase}&rdquo;</span> is being
-            prepared. Check the Articles tab in a few minutes.
+            <span className="font-medium">&ldquo;{submittedPhrase}&rdquo;</span> is ready.
+            Check the Articles tab to review it.
           </p>
         </div>
       )}

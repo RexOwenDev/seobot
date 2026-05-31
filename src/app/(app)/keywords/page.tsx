@@ -1,8 +1,12 @@
-import { DEMO_KEYWORDS } from '@/lib/demo-data';
+'use client';
+
+import { useDemoState } from '@/lib/demo-state';
 import { KeywordInputForm } from '@/components/keywords/keyword-input-form';
 import { KeywordTable } from '@/components/keywords/keyword-table';
 
 export default function KeywordsPage() {
+  const { keywords } = useDemoState();
+
   return (
     <div className="mx-auto max-w-4xl">
       <div className="mb-6">
@@ -16,7 +20,7 @@ export default function KeywordsPage() {
         <KeywordInputForm />
       </div>
 
-      <KeywordTable keywords={DEMO_KEYWORDS} />
+      <KeywordTable keywords={keywords} />
     </div>
   );
 }

@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import { NavLinks } from '@/components/layout/nav-links';
+import { DemoStateProvider } from '@/lib/demo-state';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
+    <DemoStateProvider>
     <div className="flex min-h-screen">
       {/* ── Desktop sidebar ────────────────────────────────────────────── */}
       <aside className="hidden w-56 shrink-0 flex-col border-r border-stone-200 bg-sidebar md:flex">
@@ -35,5 +37,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
     </div>
+    </DemoStateProvider>
   );
 }

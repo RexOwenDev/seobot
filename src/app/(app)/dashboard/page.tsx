@@ -1,5 +1,7 @@
+'use client';
+
 import Link from 'next/link';
-import { DEMO_STATS, DEMO_KEYWORDS, DEMO_ARTICLES } from '@/lib/demo-data';
+import { useDemoState } from '@/lib/demo-state';
 
 const STATUS_LABELS: Record<string, string> = {
   queued: 'Queued',
@@ -17,9 +19,21 @@ const STATUS_COLORS: Record<string, string> = {
   published: 'text-emerald-600 bg-emerald-50 border-emerald-200',
 };
 
+function StatCard({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="rounded-xl border border-stone-200 bg-surface p-5">
+      <p className="mb-1 text-xs text-stone-500">{label}</p>
+      <p className="text-2xl font-semibold tabular-nums">{value}</p>
+    </div>
+  );
+}
+
 export default function DashboardPage() {
-  const recentKeywords = DEMO_KEYWORDS.slice(0, 4);
-  const recentArticle = DEMO_ARTICLES[0];
+  const { keywords, articles, stats } = useDemoState();
+
+  const recentKeywords = keywords.slice(0, 4);
+  // Top article = highest SEO score
+  const topArticle = [...articles].sort((a, b) => b.seoScore - a.seoScore)[0] ?? null;
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -30,10 +44,10 @@ export default function DashboardPage() {
 
       {/* ── Stats cards ────────────────────────────────────────────────── */}
       <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Keywords tracked" value={DEMO_STATS.keywordsTracked} />
-        <StatCard label="Articles generated" value={DEMO_STATS.articlesGenerated} />
-        <StatCard label="Articles published" value={DEMO_STATS.articlesPublished} />
-        <StatCard label="Avg SEO score" value={`${DEMO_STATS.avgSeoScore}/100`} />
+        <StatCard label="Keywords tracked" value={stats.keywordsTracked} />
+        <StatCard label="Articles generated" value={stats.articlesGenerated} />
+        <StatCard label="Articles published" value={stats.articlesPublished} />
+        <StatCard label="Avg SEO score" value={`${stats.avgSeoScore}/100`} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -57,10 +71,10 @@ export default function DashboardPage() {
                 <span
                   className={[
                     'shrink-0 rounded border px-2 py-0.5 text-xs',
-                    STATUS_COLORS[kw.status] ?? '',
+                    STATUS_COLORS[kw.status] ?? STATUS_COLORS.queued,
                   ].join(' ')}
                 >
-                  {STATUS_LABELS[kw.status]}
+                  {STATUS_LABELS[kw.status] ?? kw.status}
                 </span>
               </li>
             ))}
@@ -68,51 +82,42 @@ export default function DashboardPage() {
         </section>
 
         {/* ── Top article ──────────────────────────────────────────────── */}
-        {recentArticle && (
+        {topArticle && (
           <section className="rounded-xl border border-stone-200 bg-surface p-5">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-sm font-medium text-stone-700">Top article</h2>
               <Link
-                href={`/articles/${recentArticle.id}`}
+                href={`/articles/${topArticle.id}`}
                 className="text-xs text-stone-500 hover:text-stone-700"
               >
                 Open →
               </Link>
             </div>
-            <Link href={`/articles/${recentArticle.id}`} className="group block">
+            <Link href={`/articles/${topArticle.id}`} className="group block">
               <p className="mb-2 text-sm leading-snug text-stone-800 group-hover:text-stone-900">
-                {recentArticle.h1}
+                {topArticle.h1}
               </p>
               <p className="mb-4 text-xs leading-relaxed text-stone-500 line-clamp-2">
-                {recentArticle.metaDescription}
+                {topArticle.metaDescription}
               </p>
             </Link>
             <div className="flex items-center gap-4 text-xs text-stone-500">
-              <span>{recentArticle.wordCount.toLocaleString()} words</span>
-              <span>SEO {recentArticle.seoScore}/100</span>
+              <span>{topArticle.wordCount.toLocaleString()} words</span>
+              <span>SEO {topArticle.seoScore}/100</span>
               <span
                 className={[
                   'rounded border px-2 py-0.5',
-                  recentArticle.publishedAt
+                  topArticle.publishedAt
                     ? STATUS_COLORS.published
                     : STATUS_COLORS.drafted,
                 ].join(' ')}
               >
-                {recentArticle.publishedAt ? 'Published' : 'Draft'}
+                {topArticle.publishedAt ? 'Published' : 'Draft'}
               </span>
             </div>
           </section>
         )}
       </div>
-    </div>
-  );
-}
-
-function StatCard({ label, value }: { label: string; value: string | number }) {
-  return (
-    <div className="rounded-xl border border-stone-200 bg-surface p-5">
-      <p className="mb-1 text-xs text-stone-500">{label}</p>
-      <p className="text-2xl font-semibold tabular-nums">{value}</p>
     </div>
   );
 }
