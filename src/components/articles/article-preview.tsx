@@ -8,7 +8,7 @@ export function ArticlePreview({ article }: ArticlePreviewProps) {
   return (
     <div className="rounded-xl border border-stone-200 bg-surface p-6">
       <div className="mb-6 border-b border-stone-200 pb-4">
-        <p className="mb-1 text-xs text-stone-500">H1 — Primary heading</p>
+        <p className="mb-1 text-xs text-stone-500">H1 - Primary heading</p>
         <h1 className="text-xl font-semibold leading-snug">{article.h1}</h1>
         <p className="mt-2 text-sm leading-relaxed text-stone-500">{article.metaDescription}</p>
       </div>
@@ -60,6 +60,11 @@ function SectionCard({
         </span>
       </div>
       <p className="text-xs text-stone-400">{section.wordCount} words</p>
+      {section.body?.map((para, pi) => (
+        <p key={pi} className="mt-3 text-sm leading-relaxed text-stone-700">
+          {para}
+        </p>
+      ))}
     </div>
   );
 }

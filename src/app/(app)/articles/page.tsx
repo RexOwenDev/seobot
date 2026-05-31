@@ -6,7 +6,7 @@ export default function ArticlesPage() {
     <div className="mx-auto max-w-4xl">
       <div className="mb-6">
         <h1 className="mb-1 text-2xl font-semibold tracking-tight">Articles</h1>
-        <p className="text-sm text-stone-500">Generated articles across all workspaces.</p>
+        <p className="text-sm text-stone-500">Review, refine, and publish your AI-drafted content.</p>
       </div>
 
       <div className="space-y-3">

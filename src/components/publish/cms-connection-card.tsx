@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import type { DemoCmsConnection } from '@/lib/demo-data';
 
 const STATUS_STYLES: Record<DemoCmsConnection['status'], string> = {
@@ -24,6 +27,16 @@ interface CmsConnectionCardProps {
 }
 
 export function CmsConnectionCard({ connection }: CmsConnectionCardProps) {
+  const [testState, setTestState] = useState<'idle' | 'testing' | 'verified'>('idle');
+
+  async function handleTest() {
+    if (testState !== 'idle') return;
+    setTestState('testing');
+    await new Promise(r => setTimeout(r, 1600));
+    setTestState('verified');
+    setTimeout(() => setTestState('idle'), 3000);
+  }
+
   return (
     <div className="rounded-xl border border-stone-200 bg-surface p-5">
       <div className="mb-3 flex items-center gap-3">
@@ -62,14 +75,26 @@ export function CmsConnectionCard({ connection }: CmsConnectionCardProps) {
             type="button"
             className="rounded-md border border-stone-300 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:border-stone-400 hover:text-stone-800"
           >
-            Configure →
+            Configure &rarr;
           </button>
         ) : (
           <button
             type="button"
-            className="rounded-md border border-stone-300 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:border-stone-400 hover:text-stone-800"
+            disabled={testState !== 'idle'}
+            onClick={handleTest}
+            className={[
+              'rounded-md border px-3 py-1.5 text-xs transition-colors disabled:cursor-not-allowed',
+              testState === 'verified'
+                ? 'border-emerald-300 bg-emerald-50 text-emerald-600'
+                : 'border-stone-300 text-stone-600 hover:border-stone-400 hover:text-stone-800',
+            ].join(' ')}
           >
-            Test connection
+            {testState === 'testing' && (
+              <span className="mr-1.5 inline-block h-3 w-3 animate-spin rounded-full border-2 border-stone-300 border-t-stone-600" />
+            )}
+            {testState === 'idle' && 'Test connection'}
+            {testState === 'testing' && 'Testing...'}
+            {testState === 'verified' && 'Connection verified ✓'}
           </button>
         )}
       </div>

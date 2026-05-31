@@ -25,7 +25,7 @@ export default function DashboardPage() {
     <div className="mx-auto max-w-4xl">
       <div className="mb-6">
         <h1 className="mb-1 text-2xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-stone-500">Wedded Wonderland · demo mode</p>
+        <p className="text-sm text-stone-500">Wedded Wonderland</p>
       </div>
 
       {/* ── Stats cards ────────────────────────────────────────────────── */}

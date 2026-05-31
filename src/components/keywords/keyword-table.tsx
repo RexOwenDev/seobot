@@ -10,10 +10,10 @@ const STATUS_COLORS: Record<DemoKeyword['status'], string> = {
 };
 
 const INTENT_LABELS: Record<NonNullable<DemoKeyword['intent']>, string> = {
-  informational: 'Info',
+  informational: 'Informational',
   commercial: 'Commercial',
   transactional: 'Transactional',
-  navigational: 'Nav',
+  navigational: 'Navigational',
 };
 
 interface KeywordTableProps {
@@ -72,7 +72,7 @@ export function KeywordTable({ keywords }: KeywordTableProps) {
                 <DifficultyBar value={kw.difficulty} />
               </td>
               <td className="hidden px-4 py-3 text-xs text-stone-500 lg:table-cell">
-                {kw.intent != null ? (INTENT_LABELS[kw.intent] ?? kw.intent) : '—'}
+                {kw.intent != null ? (INTENT_LABELS[kw.intent] ?? kw.intent) : '-'}
               </td>
               <td className="px-4 py-3 text-right">
                 <span

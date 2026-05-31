@@ -1,8 +1,14 @@
+'use client';
+
+import { useState } from 'react';
 import { DEMO_CMS_CONNECTIONS, DEMO_PUBLISH_JOBS } from '@/lib/demo-data';
 import { CmsConnectionCard } from '@/components/publish/cms-connection-card';
 import { PublishJobTable } from '@/components/publish/publish-job-table';
 
 export default function PublishPage() {
+  const [addModal, setAddModal] = useState<'closed' | 'open' | 'saving' | 'saved'>('closed');
+  const [newConn, setNewConn] = useState({ type: 'wordpress', url: '', username: '', password: '' });
+
   return (
     <div className="mx-auto max-w-4xl">
       <div className="mb-6">
@@ -18,6 +24,7 @@ export default function PublishPage() {
           <h2 className="text-sm font-medium text-stone-700">CMS connections</h2>
           <button
             type="button"
+            onClick={() => setAddModal('open')}
             className="rounded-md border border-stone-300 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:border-stone-400"
           >
             + Add connection
@@ -37,6 +44,90 @@ export default function PublishPage() {
         </div>
         <PublishJobTable jobs={DEMO_PUBLISH_JOBS} />
       </section>
+
+      {/* Add connection modal */}
+      {addModal !== 'closed' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
+          <div className="w-full max-w-md rounded-xl border border-stone-200 bg-white p-6 shadow-xl">
+            <h3 className="mb-4 text-sm font-semibold text-stone-800">Add CMS connection</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="mb-1 block text-xs text-stone-500">CMS type</label>
+                <select
+                  value={newConn.type}
+                  onChange={e => setNewConn(c => ({ ...c, type: e.target.value }))}
+                  className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                >
+                  <option value="wordpress">WordPress</option>
+                  <option value="shopify">Shopify</option>
+                </select>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs text-stone-500">Site URL</label>
+                <input
+                  type="url"
+                  placeholder="https://yoursite.com"
+                  value={newConn.url}
+                  onChange={e => setNewConn(c => ({ ...c, url: e.target.value }))}
+                  className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 placeholder:text-stone-300 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs text-stone-500">Username</label>
+                <input
+                  type="text"
+                  placeholder="admin"
+                  value={newConn.username}
+                  onChange={e => setNewConn(c => ({ ...c, username: e.target.value }))}
+                  className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 placeholder:text-stone-300 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs text-stone-500">Application password</label>
+                <input
+                  type="password"
+                  placeholder="xxxx xxxx xxxx xxxx"
+                  value={newConn.password}
+                  onChange={e => setNewConn(c => ({ ...c, password: e.target.value }))}
+                  className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 placeholder:text-stone-300 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                />
+              </div>
+            </div>
+            <div className="mt-5 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setAddModal('closed');
+                  setNewConn({ type: 'wordpress', url: '', username: '', password: '' });
+                }}
+                className="rounded-md border border-stone-300 px-4 py-2 text-sm text-stone-600 hover:border-stone-400"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={addModal === 'saving' || addModal === 'saved'}
+                onClick={async () => {
+                  setAddModal('saving');
+                  await new Promise(r => setTimeout(r, 1500));
+                  setAddModal('saved');
+                  setTimeout(() => {
+                    setAddModal('closed');
+                    setNewConn({ type: 'wordpress', url: '', username: '', password: '' });
+                  }, 1500);
+                }}
+                className="rounded-md bg-stone-900 px-4 py-2 text-sm font-medium text-white hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {addModal === 'saving'
+                  ? 'Connecting...'
+                  : addModal === 'saved'
+                  ? 'Connection saved ✓'
+                  : 'Save connection'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

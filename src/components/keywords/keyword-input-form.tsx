@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 type Intent = 'informational' | 'commercial' | 'transactional' | 'navigational';
+type PipelineStage = 'idle' | 'researching' | 'outlining' | 'drafting' | 'complete';
 
 interface KeywordFormState {
   phrase: string;
@@ -10,24 +11,47 @@ interface KeywordFormState {
   intent: Intent | '';
 }
 
+const STAGE_LABEL: Record<PipelineStage, string> = {
+  idle: 'Run pipeline →',
+  researching: 'Researching...',
+  outlining: 'Outlining...',
+  drafting: 'Drafting article...',
+  complete: 'Done',
+};
+
+const ACTIVE_STAGES = ['researching', 'outlining', 'drafting'] as const;
+
 export function KeywordInputForm() {
   const [form, setForm] = useState<KeywordFormState>({
     phrase: '',
     targetLength: 2000,
     intent: '',
   });
-  const [submitted, setSubmitted] = useState(false);
+  const [stage, setStage] = useState<PipelineStage>('idle');
+  const [submittedPhrase, setSubmittedPhrase] = useState('');
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.phrase.trim()) return;
-    // Phase 5 stub — no live pipeline call; shows confirmation
-    setSubmitted(true);
+    if (!form.phrase.trim() || stage !== 'idle') return;
+
+    setSubmittedPhrase(form.phrase);
+
+    setStage('researching');
+    await new Promise(r => setTimeout(r, 1200));
+    setStage('outlining');
+    await new Promise(r => setTimeout(r, 1100));
+    setStage('drafting');
+    await new Promise(r => setTimeout(r, 1300));
+    setStage('complete');
+
     setTimeout(() => {
-      setSubmitted(false);
+      setStage('idle');
       setForm({ phrase: '', targetLength: 2000, intent: '' });
-    }, 2500);
+    }, 4000);
   }
+
+  const isRunning = stage !== 'idle' && stage !== 'complete';
+  const currentIdx = ACTIVE_STAGES.indexOf(stage as (typeof ACTIVE_STAGES)[number]);
 
   return (
     <form
@@ -91,17 +115,46 @@ export function KeywordInputForm() {
       <div className="mt-4 flex items-center gap-3">
         <button
           type="submit"
-          disabled={submitted}
-          className="rounded-md bg-stone-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={stage !== 'idle'}
+          className={[
+            'rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60',
+            stage === 'complete'
+              ? 'bg-emerald-600 text-white'
+              : 'bg-stone-900 text-white hover:bg-stone-800',
+          ].join(' ')}
         >
-          {submitted ? 'Queued ✓' : 'Run pipeline →'}
+          {STAGE_LABEL[stage]}
         </button>
-        {submitted && (
-          <span className="text-xs text-emerald-600">
-            Keyword queued — research pipeline will begin shortly
-          </span>
-        )}
       </div>
+
+      {isRunning && (
+        <div className="mt-3 flex items-center gap-2">
+          {ACTIVE_STAGES.map((s, i) => (
+            <div
+              key={s}
+              className={[
+                'h-1.5 flex-1 rounded-full transition-colors duration-500',
+                i < currentIdx
+                  ? 'bg-stone-500'
+                  : i === currentIdx
+                  ? 'bg-stone-800'
+                  : 'bg-stone-200',
+              ].join(' ')}
+            />
+          ))}
+        </div>
+      )}
+
+      {stage === 'complete' && (
+        <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+          <p className="text-sm font-medium text-emerald-800">Article added to your queue</p>
+          <p className="mt-1 text-xs text-emerald-700">
+            The draft for{' '}
+            <span className="font-medium">&ldquo;{submittedPhrase}&rdquo;</span> is being
+            prepared. Check the Articles tab in a few minutes.
+          </p>
+        </div>
+      )}
     </form>
   );
 }

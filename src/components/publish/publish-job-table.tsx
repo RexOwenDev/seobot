@@ -7,6 +7,16 @@ const STATUS_STYLES: Record<DemoPublishJob['status'], string> = {
   failed: 'text-red-600 bg-red-50 border-red-200',
 };
 
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleString('en-AU', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+
 interface PublishJobTableProps {
   jobs: readonly DemoPublishJob[];
 }
@@ -45,9 +55,9 @@ export function PublishJobTable({ jobs }: PublishJobTableProps) {
                     href={job.externalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-0.5 block truncate text-xs text-stone-400 hover:text-stone-500"
+                    className="mt-0.5 block text-xs text-stone-400 hover:text-stone-500"
                   >
-                    {job.externalUrl}
+                    View article &rarr;
                   </a>
                 )}
               </td>
@@ -56,12 +66,7 @@ export function PublishJobTable({ jobs }: PublishJobTableProps) {
               </td>
               <td className="hidden px-4 py-3 md:table-cell">
                 <span className="text-xs text-stone-500">
-                  {new Date(job.startedAt).toLocaleDateString('en-CA', {
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
+                  {formatDate(job.startedAt)}
                 </span>
               </td>
               <td className="px-4 py-3 text-right">

@@ -29,7 +29,7 @@ export function InternalLinksPanel({ links }: InternalLinksPanelProps) {
       <div className="rounded-xl border border-stone-200 bg-surface p-5">
         <h2 className="mb-3 text-sm font-medium text-stone-700">Internal links</h2>
         <p className="text-xs text-stone-500">
-          No link suggestions — run the pipeline to generate them.
+          No link suggestions. Run the pipeline to generate them.
         </p>
       </div>
     );
