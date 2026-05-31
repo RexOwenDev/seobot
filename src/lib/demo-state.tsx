@@ -26,6 +26,7 @@ interface StoredState {
   keywords: DemoKeyword[];
   articles: DemoArticle[];
   publishedOverrides: Record<string, string>; // articleId → publishedAt ISO string
+  keywordStatusOverrides: Record<string, DemoKeyword['status']>; // keywordId → status (for fixture keywords)
   publishJobs: DemoPublishJob[];
   connections: DemoCmsConnection[];
 }
@@ -33,20 +34,21 @@ interface StoredState {
 const STORAGE_KEY = 'seobot-demo-v1';
 
 function readStorage(): StoredState {
-  if (typeof window === 'undefined') return { keywords: [], articles: [], publishedOverrides: {}, publishJobs: [], connections: [] };
+  if (typeof window === 'undefined') return { keywords: [], articles: [], publishedOverrides: {}, keywordStatusOverrides: {}, publishJobs: [], connections: [] };
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { keywords: [], articles: [], publishedOverrides: {}, publishJobs: [], connections: [] };
+    if (!raw) return { keywords: [], articles: [], publishedOverrides: {}, keywordStatusOverrides: {}, publishJobs: [], connections: [] };
     const parsed = JSON.parse(raw) as Partial<StoredState>;
     return {
       keywords: parsed.keywords ?? [],
       articles: parsed.articles ?? [],
       publishedOverrides: parsed.publishedOverrides ?? {},
+      keywordStatusOverrides: parsed.keywordStatusOverrides ?? {},
       publishJobs: parsed.publishJobs ?? [],
       connections: parsed.connections ?? [],
     };
   } catch {
-    return { keywords: [], articles: [], publishedOverrides: {}, publishJobs: [], connections: [] };
+    return { keywords: [], articles: [], publishedOverrides: {}, keywordStatusOverrides: {}, publishJobs: [], connections: [] };
   }
 }
 
@@ -100,7 +102,7 @@ const DemoStateContext = createContext<DemoStateValue | null>(null);
 // ── Provider ──────────────────────────────────────────────────────────────────
 
 export function DemoStateProvider({ children }: { children: ReactNode }) {
-  const [dynamic, setDynamic] = useState<StoredState>({ keywords: [], articles: [], publishedOverrides: {}, publishJobs: [], connections: [] });
+  const [dynamic, setDynamic] = useState<StoredState>({ keywords: [], articles: [], publishedOverrides: {}, keywordStatusOverrides: {}, publishJobs: [], connections: [] });
 
   // Load from localStorage after mount (avoids SSR hydration mismatch)
   useEffect(() => {
@@ -109,7 +111,10 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
 
   // Merge: dynamic entries first (newest first), then fixtures
   // Apply publishedOverrides to any article (fixture or dynamic)
-  const keywords = [...dynamic.keywords, ...DEMO_KEYWORDS] as readonly DemoKeyword[];
+  const keywords = [...dynamic.keywords, ...DEMO_KEYWORDS].map(kw => {
+    const statusOverride = dynamic.keywordStatusOverrides[kw.id];
+    return statusOverride ? ({ ...kw, status: statusOverride } as DemoKeyword) : kw;
+  }) as readonly DemoKeyword[];
   const articles = [...dynamic.articles, ...DEMO_ARTICLES].map(a => {
     const overrideDate = dynamic.publishedOverrides[a.id];
     if (overrideDate) {
@@ -186,9 +191,17 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
         completedAt: now,
         externalUrl: `https://weddedwonderland.com.au/blog/${slug}`,
       };
+      // Find fixture keywords linked to this article that need a status override
+      const fixtureKeywordOverrides: Record<string, DemoKeyword['status']> = {};
+      for (const kw of DEMO_KEYWORDS) {
+        if (kw.articleId === id) {
+          fixtureKeywordOverrides[kw.id] = 'published';
+        }
+      }
       const next: StoredState = {
         ...prev,
         publishedOverrides: { ...prev.publishedOverrides, [id]: now },
+        keywordStatusOverrides: { ...prev.keywordStatusOverrides, ...fixtureKeywordOverrides },
         publishJobs: [newJob, ...prev.publishJobs],
         // Flip any dynamic keyword referencing this article to 'published'
         keywords: prev.keywords.map(kw =>
@@ -210,7 +223,7 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const resetDemo = useCallback(() => {
-    const empty: StoredState = { keywords: [], articles: [], publishedOverrides: {}, publishJobs: [], connections: [] };
+    const empty: StoredState = { keywords: [], articles: [], publishedOverrides: {}, keywordStatusOverrides: {}, publishJobs: [], connections: [] };
     writeStorage(empty);
     setDynamic(empty);
   }, []);
