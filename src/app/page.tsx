@@ -50,7 +50,7 @@ export default function HomePage() {
           <span className="mb-6 inline-block rounded-full border border-[--color-border] bg-[--color-muted] px-3 py-1 text-xs text-[--color-muted-foreground]">
             AI-powered · 2026
           </span>
-          <h1 className="mb-4 text-5xl font-semibold tracking-tight text-[--color-foreground] sm:text-6xl">
+          <h1 className="mb-4 text-4xl font-semibold tracking-tight text-[--color-foreground] sm:text-5xl lg:text-6xl">
             Destination keyword in.{' '}
             <span className="text-[--color-accent]">Published article out.</span>
           </h1>

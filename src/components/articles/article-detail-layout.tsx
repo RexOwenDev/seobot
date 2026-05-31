@@ -40,7 +40,7 @@ export function ArticleDetailLayout({ article }: ArticleDetailLayoutProps) {
 
       {/* Publish status banner — published */}
       {liveArticle.publishedAt && (
-        <div className="mb-4 flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs text-emerald-600">
+        <div className="mb-4 flex flex-wrap items-center gap-x-2 gap-y-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs text-emerald-600">
           <span>✓</span>
           <span>
             Saved as WordPress draft ·{' '}
@@ -63,7 +63,7 @@ export function ArticleDetailLayout({ article }: ArticleDetailLayoutProps) {
 
       {/* Publish action banner — draft */}
       {!liveArticle.publishedAt && (
-        <div className="mb-4 flex items-center gap-3 rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5">
+        <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5">
           <span className="text-xs text-stone-500">
             Draft — not yet sent to WordPress
           </span>
@@ -71,7 +71,7 @@ export function ArticleDetailLayout({ article }: ArticleDetailLayoutProps) {
             type="button"
             disabled={publishState === 'publishing'}
             onClick={handlePublish}
-            className="ml-auto flex items-center gap-1.5 rounded-md bg-stone-900 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60"
+            className="ml-auto flex items-center gap-1.5 rounded-md bg-stone-900 px-4 py-2.5 text-xs font-medium text-white transition-colors hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {publishState === 'publishing' && (
               <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-stone-600 border-t-white" />
