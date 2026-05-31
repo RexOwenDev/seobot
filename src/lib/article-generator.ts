@@ -238,23 +238,25 @@ function bodyTips(): readonly string[] {
 function buildSections(phrase: string, targetLength: number): readonly DemoSection[] {
   const topic = extractTopic(phrase);
   const dest = getDestinationKey(phrase);
+  const isHoneymoon = /honeymoon/i.test(phrase);
+  const eventWord = isHoneymoon ? 'Honeymoon' : 'Wedding';
 
   const specs: Array<{ level: 2 | 3; text: string; pct: number; body: readonly string[] }> = [
     {
       level: 2,
-      text: `Why ${cap(topic)} Is Perfect for Your Wedding`,
+      text: `Why ${cap(topic)} Is Perfect for Your ${eventWord}`,
       pct: 0.15,
       body: bodyWhy(topic, dest),
     },
     {
       level: 2,
-      text: `Planning Your ${cap(topic)} Wedding`,
+      text: `Planning Your ${cap(topic)} ${eventWord}`,
       pct: 0.18,
       body: bodyPlanning(phrase, dest),
     },
     {
       level: 2,
-      text: `Top Venues for a ${cap(topic)} Wedding`,
+      text: `Top Venues for a ${cap(topic)} ${eventWord}`,
       pct: 0.16,
       body: bodyVenues(phrase, dest),
     },
@@ -272,7 +274,7 @@ function buildSections(phrase: string, targetLength: number): readonly DemoSecti
     },
     {
       level: 2,
-      text: `What to Budget for a ${cap(topic)} Wedding in 2026`,
+      text: `What to Budget for a ${cap(topic)} ${eventWord} in 2026`,
       pct: 0.18,
       body: bodyBudget(phrase, dest),
     },

@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { NavLinks } from '@/components/layout/nav-links';
 import { DemoStateProvider } from '@/lib/demo-state';
-import { ResetDemoButton } from '@/components/layout/reset-demo-button';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,7 +20,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="rounded-md border border-stone-200 bg-surface p-3">
             <p className="mb-1 text-xs font-medium text-stone-700">Wedded Wonderland</p>
             <p className="text-xs text-stone-400">Content Studio</p>
-            <ResetDemoButton />
           </div>
         </div>
       </aside>

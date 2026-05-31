@@ -60,7 +60,7 @@ export default function PublishPage() {
                   className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
                 >
                   <option value="wordpress">WordPress</option>
-                  <option value="shopify">Shopify</option>
+                  <option value="shopify" disabled>Shopify (coming soon)</option>
                 </select>
               </div>
               <div>

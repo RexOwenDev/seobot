@@ -174,9 +174,9 @@ export function KeywordInputForm() {
               className={[
                 'h-1.5 flex-1 rounded-full transition-colors duration-500',
                 i < currentIdx
-                  ? 'bg-stone-500'
+                  ? 'bg-accent'
                   : i === currentIdx
-                  ? 'bg-stone-800'
+                  ? 'bg-accent opacity-70'
                   : 'bg-stone-200',
               ].join(' ')}
             />

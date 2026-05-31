@@ -65,7 +65,7 @@ export default function DashboardPage() {
                 <div className="min-w-0">
                   <p className="truncate text-sm text-stone-800">{kw.phrase}</p>
                   <p className="mt-0.5 text-xs text-stone-500">
-                    {kw.searchVolume.toLocaleString()} vol · {kw.brand}
+                    {kw.searchVolume.toLocaleString()} vol · {kw.difficulty} KD
                   </p>
                 </div>
                 <span

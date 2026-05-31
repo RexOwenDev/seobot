@@ -20,7 +20,6 @@ function ArticleCard({ article }: { article: DemoArticle }) {
         <div className="mt-2 flex flex-wrap gap-3 text-xs text-stone-400">
           <span>{article.wordCount.toLocaleString()} words</span>
           <span>SEO {article.seoScore}/100</span>
-          <span>/{article.slug}</span>
         </div>
       </div>
       <div className="shrink-0 text-right">

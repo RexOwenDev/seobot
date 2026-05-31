@@ -36,7 +36,7 @@ export function NavLinks({ orientation = 'vertical' }: { orientation?: 'vertical
             className={[
               'flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors',
               active
-                ? 'bg-stone-200 text-stone-900'
+                ? 'border-l-2 border-accent bg-stone-100 text-stone-900'
                 : 'text-stone-500 hover:bg-stone-100 hover:text-stone-800',
             ].join(' ')}
             aria-current={active ? 'page' : undefined}

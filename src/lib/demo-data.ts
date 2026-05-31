@@ -55,6 +55,16 @@ export const DEMO_KEYWORDS: readonly DemoKeyword[] = [
     articleId: null,
   },
   {
+    id: 'kw-007',
+    phrase: 'honeymoon packages Maldives overwater villa',
+    searchVolume: 3200,
+    difficulty: 29,
+    intent: 'informational',
+    brand: 'Wedded Wonderland',
+    status: 'queued',
+    articleId: null,
+  },
+  {
     id: 'kw-005',
     phrase: 'all inclusive wedding resorts Bali',
     searchVolume: 2200,
@@ -491,7 +501,7 @@ export const DEMO_PUBLISH_JOBS: readonly DemoPublishJob[] = [
     status: 'succeeded',
     startedAt: '2026-05-20T09:00:00Z',
     completedAt: '2026-05-20T09:00:12Z',
-    externalUrl: 'https://weddedwonderland.com.au/blog/destination-weddings-bali-complete-guide',
+    externalUrl: null,
   },
 ] as const;
 

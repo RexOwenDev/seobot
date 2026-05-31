@@ -48,7 +48,7 @@ export default function HomePage() {
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <section className="mx-auto max-w-4xl px-6 pb-16 pt-24 text-center">
           <span className="mb-6 inline-block rounded-full border border-[--color-border] bg-[--color-muted] px-3 py-1 text-xs text-[--color-muted-foreground]">
-            Private demo · 2026
+            AI-powered · 2026
           </span>
           <h1 className="mb-4 text-5xl font-semibold tracking-tight text-[--color-foreground] sm:text-6xl">
             Destination keyword in.{' '}
@@ -129,7 +129,7 @@ export default function HomePage() {
       {/* ── Footer ───────────────────────────────────────────────────────── */}
       <footer className="border-t border-[--color-border] py-8">
         <div className="mx-auto max-w-6xl px-6 text-center text-xs text-[--color-muted-foreground]">
-          Wedded Wonderland Content Engine | Private Demo · Not for distribution
+          Wedded Wonderland Content Engine · 2026
         </div>
       </footer>
     </div>
