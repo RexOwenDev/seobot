@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 // Demo window — extend by updating DEMO_EXPIRES_AT env var
 const DEMO_EXPIRES_AT = process.env.DEMO_EXPIRES_AT
@@ -33,7 +34,7 @@ const QUOTA_HTML = `<!DOCTYPE html>
 </body>
 </html>`;
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Skip static assets and Next.js internals

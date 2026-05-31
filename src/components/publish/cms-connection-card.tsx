@@ -39,7 +39,7 @@ export function CmsConnectionCard({ connection, onConfigure }: CmsConnectionCard
   }
 
   return (
-    <div className="rounded-xl border border-stone-200 bg-surface p-5">
+    <div className="min-w-0 rounded-xl border border-stone-200 bg-surface p-5">
       <div className="mb-3 flex items-center gap-3">
         <div className="flex h-8 w-8 items-center justify-center rounded-md border border-stone-300 bg-stone-100 font-semibold text-stone-600">
           {PROVIDER_ICONS[connection.provider]}

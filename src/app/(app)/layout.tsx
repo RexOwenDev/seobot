@@ -27,9 +27,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* ── Mobile top nav ─────────────────────────────────────────────── */}
-      <div className="flex flex-1 flex-col">
-        <header className="flex h-14 items-center justify-between border-b border-stone-200 bg-sidebar px-4 md:hidden">
-          <Link href="/" className="min-w-0 shrink truncate text-sm font-semibold tracking-tight">
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="flex h-14 min-w-0 items-center justify-between border-b border-stone-200 bg-sidebar px-4 md:hidden">
+          <Link href="/" className="min-w-0 flex-1 truncate text-sm font-semibold tracking-tight">
             Wedded Wonderland
           </Link>
           <div className="shrink-0">
@@ -38,7 +38,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* ── Page content ─────────────────────────────────────────────── */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto px-4 py-6 sm:px-6">{children}</main>
+        <main className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-4 py-6 sm:px-6">{children}</main>
       </div>
     </div>
     </DemoStateProvider>
