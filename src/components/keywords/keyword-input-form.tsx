@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useDemoState } from '@/lib/demo-state';
 import { generateArticleFromKeyword } from '@/lib/article-generator';
 import type { DemoKeyword } from '@/lib/demo-data';
@@ -32,6 +33,7 @@ export function KeywordInputForm() {
   });
   const [stage, setStage] = useState<PipelineStage>('idle');
   const [submittedPhrase, setSubmittedPhrase] = useState('');
+  const [lastArticleId, setLastArticleId] = useState<string | null>(null);
 
   const { addKeyword, updateKeywordStatus, addArticle } = useDemoState();
 
@@ -72,6 +74,7 @@ export function KeywordInputForm() {
 
     // Generate article and link it to the keyword
     const articleId = `art-gen-${Date.now()}`;
+    setLastArticleId(articleId);
     const article = generateArticleFromKeyword(phrase, form.targetLength, articleId, kwId);
     addArticle(article);
     updateKeywordStatus(kwId, 'drafted', articleId);
@@ -81,6 +84,7 @@ export function KeywordInputForm() {
     setTimeout(() => {
       setStage('idle');
       setForm({ phrase: '', targetLength: 2000, intent: '' });
+      setLastArticleId(null);
     }, 4000);
   }
 
@@ -189,6 +193,14 @@ export function KeywordInputForm() {
             <span className="font-medium">&ldquo;{submittedPhrase}&rdquo;</span> is ready.
             Check the Articles tab to review it.
           </p>
+          {lastArticleId && (
+            <Link
+              href={`/articles/${lastArticleId}`}
+              className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-emerald-700 underline underline-offset-2 hover:text-emerald-900"
+            >
+              Open article →
+            </Link>
+          )}
         </div>
       )}
     </form>

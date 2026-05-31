@@ -3,13 +3,13 @@ import { NextRequest, NextResponse } from 'next/server';
 // Demo window — extend by updating DEMO_EXPIRES_AT env var
 const DEMO_EXPIRES_AT = process.env.DEMO_EXPIRES_AT
   ? new Date(process.env.DEMO_EXPIRES_AT)
-  : new Date('2026-06-02T23:59:59Z');
+  : new Date('2026-07-31T23:59:59Z');
 
 // Module-level usage counter.
 // Note: resets on cold start — sufficient for a 2-day demo window.
 // Production: replace with Vercel KV or Upstash Redis for persistent rate limiting.
 let pageViews = 0;
-const MAX_DEMO_PAGE_VIEWS = 150;
+const MAX_DEMO_PAGE_VIEWS = 500;
 
 const EXPIRED_HTML = `<!DOCTYPE html>
 <html lang="en">

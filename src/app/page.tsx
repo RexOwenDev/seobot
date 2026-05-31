@@ -55,7 +55,7 @@ export default function HomePage() {
             <span className="text-[--color-accent]">Published article out.</span>
           </h1>
           <p className="mx-auto mb-8 max-w-2xl text-lg text-[--color-muted-foreground]">
-            Enter a destination wedding keyword — Bali, Santorini, Tuscany — and the engine
+            Enter a destination wedding keyword like Bali, Santorini, or Tuscany, and the engine
             generates a fully structured, SEO-optimised article ready to publish to your WordPress
             staging site as a draft.
           </p>
@@ -106,8 +106,8 @@ export default function HomePage() {
                   Built for destination SEO
                 </h2>
                 <p className="text-sm leading-relaxed text-[--color-muted-foreground]">
-                  Articles target destination-specific search intent — &ldquo;destination weddings
-                  Bali&rdquo;, &ldquo;luxury wedding venues Santorini&rdquo; — feeding organic
+                  Articles target destination-specific search intent, capturing phrases like &ldquo;destination weddings
+                  Bali&rdquo; and &ldquo;luxury wedding venues Santorini,&rdquo; feeding organic
                   demand signals directly into your CRM pipeline.
                 </p>
               </div>
@@ -129,7 +129,7 @@ export default function HomePage() {
       {/* ── Footer ───────────────────────────────────────────────────────── */}
       <footer className="border-t border-[--color-border] py-8">
         <div className="mx-auto max-w-6xl px-6 text-center text-xs text-[--color-muted-foreground]">
-          Wedded Wonderland Content Engine — Private Demo · Not for distribution
+          Wedded Wonderland Content Engine | Private Demo · Not for distribution
         </div>
       </footer>
     </div>

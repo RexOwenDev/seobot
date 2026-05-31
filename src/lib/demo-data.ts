@@ -491,7 +491,7 @@ export const DEMO_PUBLISH_JOBS: readonly DemoPublishJob[] = [
     status: 'succeeded',
     startedAt: '2026-05-20T09:00:00Z',
     completedAt: '2026-05-20T09:00:12Z',
-    externalUrl: 'https://weddedwonderland.com/destination-weddings-bali-complete-guide',
+    externalUrl: null,
   },
 ] as const;
 

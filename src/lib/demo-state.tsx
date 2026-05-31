@@ -21,17 +21,24 @@ import {
 interface StoredState {
   keywords: DemoKeyword[];
   articles: DemoArticle[];
+  publishedOverrides: Record<string, string>; // articleId → publishedAt ISO string
 }
 
 const STORAGE_KEY = 'seobot-demo-v1';
 
 function readStorage(): StoredState {
-  if (typeof window === 'undefined') return { keywords: [], articles: [] };
+  if (typeof window === 'undefined') return { keywords: [], articles: [], publishedOverrides: {} };
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as StoredState) : { keywords: [], articles: [] };
+    if (!raw) return { keywords: [], articles: [], publishedOverrides: {} };
+    const parsed = JSON.parse(raw) as Partial<StoredState>;
+    return {
+      keywords: parsed.keywords ?? [],
+      articles: parsed.articles ?? [],
+      publishedOverrides: parsed.publishedOverrides ?? {},
+    };
   } catch {
-    return { keywords: [], articles: [] };
+    return { keywords: [], articles: [], publishedOverrides: {} };
   }
 }
 
@@ -49,7 +56,7 @@ function writeStorage(state: StoredState) {
 interface DemoStateValue {
   /** All keywords: dynamic (newest first) + fixtures */
   keywords: readonly DemoKeyword[];
-  /** All articles: dynamic (newest first) + fixtures */
+  /** All articles: dynamic (newest first) + fixtures, with publish overrides applied */
   articles: readonly DemoArticle[];
   /** Live stats derived from full merged dataset */
   stats: {
@@ -68,6 +75,10 @@ interface DemoStateValue {
   ) => void;
   /** Add a generated article. */
   addArticle: (article: DemoArticle) => void;
+  /** Mark any article (fixture or dynamic) as published. Persists across navigation. */
+  publishArticle: (id: string) => void;
+  /** Clear all user-generated data and reset to fixture state. */
+  resetDemo: () => void;
 }
 
 const DemoStateContext = createContext<DemoStateValue | null>(null);
@@ -75,7 +86,7 @@ const DemoStateContext = createContext<DemoStateValue | null>(null);
 // ── Provider ──────────────────────────────────────────────────────────────────
 
 export function DemoStateProvider({ children }: { children: ReactNode }) {
-  const [dynamic, setDynamic] = useState<StoredState>({ keywords: [], articles: [] });
+  const [dynamic, setDynamic] = useState<StoredState>({ keywords: [], articles: [], publishedOverrides: {} });
 
   // Load from localStorage after mount (avoids SSR hydration mismatch)
   useEffect(() => {
@@ -83,8 +94,15 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Merge: dynamic entries first (newest first), then fixtures
+  // Apply publishedOverrides to any article (fixture or dynamic)
   const keywords = [...dynamic.keywords, ...DEMO_KEYWORDS] as readonly DemoKeyword[];
-  const articles = [...dynamic.articles, ...DEMO_ARTICLES] as readonly DemoArticle[];
+  const articles = [...dynamic.articles, ...DEMO_ARTICLES].map(a => {
+    const overrideDate = dynamic.publishedOverrides[a.id];
+    if (overrideDate) {
+      return { ...a, publishedAt: overrideDate, cmsConnectionId: 'cms-001' } as DemoArticle;
+    }
+    return a;
+  }) as readonly DemoArticle[];
 
   const stats = {
     keywordsTracked: keywords.length,
@@ -133,9 +151,26 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const publishArticle = useCallback((id: string) => {
+    setDynamic(prev => {
+      const next = {
+        ...prev,
+        publishedOverrides: { ...prev.publishedOverrides, [id]: new Date().toISOString() },
+      };
+      writeStorage(next);
+      return next;
+    });
+  }, []);
+
+  const resetDemo = useCallback(() => {
+    const empty: StoredState = { keywords: [], articles: [], publishedOverrides: {} };
+    writeStorage(empty);
+    setDynamic(empty);
+  }, []);
+
   return (
     <DemoStateContext.Provider
-      value={{ keywords, articles, stats, addKeyword, updateKeywordStatus, addArticle }}
+      value={{ keywords, articles, stats, addKeyword, updateKeywordStatus, addArticle, publishArticle, resetDemo }}
     >
       {children}
     </DemoStateContext.Provider>
