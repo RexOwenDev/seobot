@@ -3,6 +3,7 @@ import 'server-only'; // prevents serverEnv (which holds credentials) from being
 import { z } from 'zod';
 
 const ServerEnvSchema = z.object({
+  OPENAI_API_KEY: z.string().optional(),
   AI_GATEWAY_API_KEY: z.string().optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
   WORDPRESS_SITE_URL: z.string().url().optional(),
@@ -29,6 +30,7 @@ const ClientEnvSchema = z.object({
  * features that depend on them.
  */
 export const serverEnv = ServerEnvSchema.parse({
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   AI_GATEWAY_API_KEY: process.env.AI_GATEWAY_API_KEY,
   SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
   WORDPRESS_SITE_URL: process.env.WORDPRESS_SITE_URL,

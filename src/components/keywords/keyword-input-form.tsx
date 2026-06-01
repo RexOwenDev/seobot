@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useDemoState } from '@/lib/demo-state';
-import { generateArticleFromKeyword } from '@/lib/article-generator';
-import type { DemoKeyword } from '@/lib/demo-data';
+import type { DemoKeyword, DemoArticle } from '@/lib/demo-data';
 
 type Intent = 'informational' | 'commercial' | 'transactional' | 'navigational';
 type PipelineStage = 'idle' | 'researching' | 'outlining' | 'drafting' | 'complete';
@@ -34,6 +33,7 @@ export function KeywordInputForm({ prefill }: { prefill?: string }) {
   const [stage, setStage] = useState<PipelineStage>('idle');
   const [submittedPhrase, setSubmittedPhrase] = useState('');
   const [lastArticleId, setLastArticleId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const { addKeyword, updateKeywordStatus, addArticle } = useDemoState();
 
@@ -49,6 +49,7 @@ export function KeywordInputForm({ prefill }: { prefill?: string }) {
 
     const phrase = form.phrase.trim();
     setSubmittedPhrase(phrase);
+    setError(null);
 
     // Realistic-feeling estimated metrics for the new keyword
     const searchVolume = Math.floor(Math.random() * 2500) + 800;
@@ -74,16 +75,33 @@ export function KeywordInputForm({ prefill }: { prefill?: string }) {
     updateKeywordStatus(kwId, 'outlined');
     await new Promise(r => setTimeout(r, 1100));
 
-    // Stage 3: Drafting
+    // Stage 3: Drafting — real OpenAI generation
     setStage('drafting');
-    await new Promise(r => setTimeout(r, 1300));
-
-    // Generate article and link it to the keyword
     const articleId = `art-gen-${Date.now()}`;
     setLastArticleId(articleId);
-    const article = generateArticleFromKeyword(phrase, form.targetLength, articleId, kwId);
-    addArticle(article);
-    updateKeywordStatus(kwId, 'drafted', articleId);
+
+    try {
+      const res = await fetch('/api/articles/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keyword: phrase, targetLength: form.targetLength, articleId, keywordId: kwId }),
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({ error: 'Unknown error' })) as { error?: string };
+        throw new Error(errData.error ?? 'Generation failed');
+      }
+      const article = await res.json() as DemoArticle;
+      addArticle(article);
+      updateKeywordStatus(kwId, 'drafted', articleId);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Article generation failed';
+      setError(msg);
+      // Reset keyword back to queued so user can retry
+      updateKeywordStatus(kwId, 'queued');
+      setStage('idle');
+      setLastArticleId(null);
+      return;
+    }
 
     setStage('complete');
 
@@ -187,6 +205,14 @@ export function KeywordInputForm({ prefill }: { prefill?: string }) {
               ].join(' ')}
             />
           ))}
+        </div>
+      )}
+
+      {/* Error panel */}
+      {error && (
+        <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4">
+          <p className="text-sm font-medium text-red-800">Generation failed</p>
+          <p className="mt-1 text-xs text-red-700">{error}</p>
         </div>
       )}
 
